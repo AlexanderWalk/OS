@@ -41,8 +41,37 @@ public class SMthdBlock {
 }
 package rte;
 public class DynamicRuntime {
-  public static Object newInstance(int scalarSize, int relocEntries,
-      SClassDesc type) { while(true); }
+  public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
+    //Pointer auf erstes Objekt im Speicher
+    int firstObjectPtr = MAGIC.imageBase+16;
+    Object object = MAGIC.cast2Obj(firstObjectPtr);
+    //Zum letzten Objekt springen
+    while(object._r_next != null) {
+      object = object._r_next;
+    }
+    //Referenz auf Objekt, Anzahl Skalare aufrechnen und Allign auf 4 Bytes
+    int newObjectPointer = Magic.cast2Ref(object);
+    newObjectPointer +=object._r_scalarSize;
+    newObjectPointer = (newObjectPointer + 3)&~3;
+    if(objPtr % 4 != 0){
+      objPtr += 4 - (objPtr % 4);
+    }
+    //Von Java geforderte Null-Initialisierung
+    //relocEntries*4, da Anzahl Pointer à 4 Bytes
+    int newObjectEndAdress = newObjectPointer + (scalarSize + relocEntries*4)+4;
+    for(int i = newObjectPointer; i<newObjectEndAdress;i++) {
+      MAGIC.wMem32(i, 0);
+    }
+    //Platz für die relocEntries machen
+    newObjectPointer+=relocEntries*4;
+    objPtr += rlE*4;//offset object pointer to make space for the relocs
+    Object newObject = MAGIC.cast2Obj(newObjectPointer);//we now have the correct address for the new object in objPtr
+    MAGIC.assign(ob._r_next, newObject);
+    MAGIC.assign(newObject._r_relocEntries, relocEntries);
+    MAGIC.assign(newObject._r_scalarSize, scalarSize);
+    MAGIC.assign(newObject._r_type, type);
+    return newObject;
+  }
   public static SArray newArray(int length, int arrDim, int entrySize,
       int stdType, Object unitType) { while(true); }
   public static void newMultArray(SArray[] parent, int curLevel,
