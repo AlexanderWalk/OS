@@ -50,12 +50,9 @@ public class DynamicRuntime {
       object = object._r_next;
     }
     //Referenz auf Objekt, Anzahl Skalare aufrechnen und Allign auf 4 Bytes
-    int newObjectPointer = Magic.cast2Ref(object);
-    newObjectPointer +=object._r_scalarSize;
+    int newObjectPointer = MAGIC.cast2Ref(object)+object._r_scalarSize;
+    //Allign mit &~ wie in Vorlesung
     newObjectPointer = (newObjectPointer + 3)&~3;
-    if(objPtr % 4 != 0){
-      objPtr += 4 - (objPtr % 4);
-    }
     //Von Java geforderte Null-Initialisierung
     //relocEntries*4, da Anzahl Pointer à 4 Bytes
     int newObjectEndAdress = newObjectPointer + (scalarSize + relocEntries*4)+4;
@@ -64,9 +61,8 @@ public class DynamicRuntime {
     }
     //Platz für die relocEntries machen
     newObjectPointer+=relocEntries*4;
-    objPtr += rlE*4;//offset object pointer to make space for the relocs
-    Object newObject = MAGIC.cast2Obj(newObjectPointer);//we now have the correct address for the new object in objPtr
-    MAGIC.assign(ob._r_next, newObject);
+    Object newObject = MAGIC.cast2Obj(newObjectPointer);
+    MAGIC.assign(object._r_next, newObject);
     MAGIC.assign(newObject._r_relocEntries, relocEntries);
     MAGIC.assign(newObject._r_scalarSize, scalarSize);
     MAGIC.assign(newObject._r_type, type);
