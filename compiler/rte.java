@@ -55,7 +55,7 @@ public class DynamicRuntime {
     newObjectPointer = (newObjectPointer + 3)&~3;
     //Von Java geforderte Null-Initialisierung
     //relocEntries*4, da Anzahl Pointer à 4 Bytes
-    int newObjectEndAdress = newObjectPointer + (scalarSize + relocEntries*4)+4;
+    int newObjectEndAdress = newObjectPointer + scalarSize + relocEntries*4 +4;
     for(int i = newObjectPointer; i<newObjectEndAdress;i++) {
       MAGIC.wMem32(i, 0);
     }
