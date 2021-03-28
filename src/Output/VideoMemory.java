@@ -1,17 +1,15 @@
 package Output;
 
-import Colors.ConsoleColor;
-import Colors.FontColor;
-
+//TODO: Aufsplitten in zwei Klassen - relative VideoAdresse aus column*rowPosition erstellen zur leichten Bestimmung
+// von Zeilen/Bildschirmüberlauf
 class VideoMemory {
-    //80x25 Auflösung -> 2000 Zeichen, 2 Byte/Zeichen -> Ascii + Farbe
     private static final int rowCount =80;
     private static final int bytesPerRow = rowCount *2;
     private static final int columnCount = 25;
     private static final int memoryLength = bytesPerRow * columnCount;
     private static final int startAddress =0xB8000;
     private static final int endAddress = startAddress + memoryLength;
-    public static final int clearColor = 0x00;
+    private static final int clearColor = 0x00;
     private static final int spaceKey = 0x20;
     private static int vidMemCurr = startAddress;
 
@@ -37,7 +35,7 @@ class VideoMemory {
 
     static void nextRow(){
         checkVideoMemoryOverflow(bytesPerRow);
-        //vidMemCurr=(vidMemCurr+bytesPerRow-2)&~rowCount;
+        //TODO:Mit &~ zu einem Einzeiler?
         //relativen Platz in der Zeile holen.
         int temp = (vidMemCurr-startAddress)%bytesPerRow;
         //restlichen Bytes zum auffüllen der Zeile bestimmen.
@@ -45,4 +43,16 @@ class VideoMemory {
         vidMemCurr += temp2;
     }
 
+    //TODO Cursor Update nach ausgabe
+    static void setCursor(int x, int y) {
+        if(x<0||x>rowCount||y<0||y>columnCount){
+            //TODO
+            return;
+        }
+        int position = y*bytesPerRow+x;
+        MAGIC.wIOs8(0x3D4, (byte)0x0F);
+        MAGIC.wIOs8(0x3D5, (byte)(position&0xFF));
+        MAGIC.wIOs8(0x3D4, (byte)0x0E);
+        MAGIC.wIOs8(0x3D5, (byte)((position>>8)&0xFF));
+    }
 }

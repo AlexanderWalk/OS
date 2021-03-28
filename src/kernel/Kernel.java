@@ -1,18 +1,13 @@
 package kernel;
 
-import Colors.ColorController;
-import Colors.StaticColors;
+import Output.Colors.StaticColors;
 import Output.Console;
-import Colors.ColorBase;
-import Colors.ColorController;
 
 public class Kernel {
-
     public static void main() {
         Console console = new Console();
-
         console.clearConsole();
-        //console.setColor(console.colorPicker.font_grey,console.colorPicker.back_black);
+        console.setCursor(0,0);
         console.print('A');
         console.println();
         console.setColor(StaticColors.font_cyan,StaticColors.defaultBack);
@@ -24,6 +19,7 @@ public class Kernel {
         console1.println();
         console.print("Farbe von erster Konsole immernoch auf Cyan?");
         console1.println();
+        console.setColor(StaticColors.font_lightmagenta,StaticColors.defaultBack);
         int z = 0;
         int x = 273;
         long y = 500000000;
@@ -32,9 +28,8 @@ public class Kernel {
         byte hex2= -2;
         short hex3= (short) 0xF1B3;
         int hex4= 0x1A2B3C4D;
-        long hex5= 0x1A2B3C4F;
-        long hex6=-1;
-        //byte hex3=-1;
+        long hex5= 0x1A2B3C4D1AAABCFDL;
+        long hex6=-1L;
         console1.println(x);
         console1.println(y);
         console.println(z);
@@ -45,14 +40,10 @@ public class Kernel {
         console.printlnHex(hex4);
         console.printlnHex(hex5);
         console1.printlnHex(hex6);
-        //console.setColor(c.font_green,c.back_black);
-        //console.print("TEST");
+        for(int i=0;i<11;i++){
+            console.println();
+        }
+        //Overflow Check
+        console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde");
     }
-
-
-
-    //Newline Test
-
-
-
 }

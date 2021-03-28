@@ -1,18 +1,16 @@
 package Output;
 
-import Colors.*;
+import Output.Colors.*;
 
 public class Console {
-
     public final ConsoleColor currentColor= new ConsoleColor();
-    //public final ColorController colorPicker= ColorController.getInstance();
-
-    //public void setColor(FontColor font, BackColor back){
-    //    this.currentColor.setColor(font,back);
-    //}
 
     public void setColor(int font, int back){
         this.currentColor.setColor(font,back);
+    }
+
+    public void setCursor(int x, int y){
+        VideoMemory.setCursor(x,y);
     }
 
     public void clearConsole(){

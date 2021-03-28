@@ -1,4 +1,4 @@
-package Colors;
+package Output.Colors;
 
 public class StaticColors {
     private static final int light_version = 0x08;
