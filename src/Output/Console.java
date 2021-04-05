@@ -14,15 +14,15 @@ public class Console {
     }
 
     public void clearConsole(){
-        VideoMemory.clearVideoMemory();
+        VideoMemory.clearMemory();
     }
 
     public void println(){
-        VideoMemory.nextRow();
+        VideoMemory.newLine();
     }
 
     public void print(char c) {
-        VideoMemory.outputChar(c,this.currentColor.getColor());
+        VideoMemory.writeChar(c,this.currentColor.getColor());
     }
 
     public void println(char c){

@@ -44,6 +44,6 @@ public class Kernel {
             console.println();
         }
         //Overflow Check
-        console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde");
+        console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde --");
     }
 }
