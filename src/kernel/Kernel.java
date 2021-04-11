@@ -2,10 +2,12 @@ package kernel;
 
 import Output.Colors.StaticColors;
 import Output.Console;
+import BIOS;
 
 public class Kernel {
     private static final int GDTBASE = 0x10000;
     public static void main() {
+        //while(true);
         Console c = new Console();
         c.clearConsole();
         c.println("Interrupttests:");
@@ -13,6 +15,10 @@ public class Kernel {
         //Interrupts.ClearInterruptFlag();
         //Interrupts.SetInterruptFlag();
         MAGIC.inline(0xCC);
+        BIOS.regs.EAX=0x0013;
+        BIOS.rint(0x10);
+        BIOS.regs.EAX=0x0003;
+        BIOS.rint(0x10);
         while(true);
         //consoleCheck();
     }

@@ -46,12 +46,18 @@ public class Interrupts {
         }
     }
 
-    private static void setIDTRegister() {
+    public static void setIDTRegister() {
         //Table-Anfang und limit
         int tableLimit =bytesPerEntry*entryCount-1;
         long tmp=(((long) IDTStartAdress)<<16)|(long)tableLimit;
         MAGIC.inline(0x0F, 0x01, 0x5D);
         MAGIC.inlineOffset(1, tmp);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
+    }
+    public static void setIDTRegisterRM() {
+        //RealMode - 1023
+        long tableLimit =1023;
+        MAGIC.inline(0x0F, 0x01, 0x5D);
+        MAGIC.inlineOffset(1, tableLimit);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
     }
 
     //IDT:
