@@ -1,4 +1,10 @@
 # Default ignored files
 /.idea/
 /Compiler/*
-!/Compiler/rte.java
+!/Compiler/BIOS.java
+!/Compiler/DynamicRuntime.java
+!/Compiler/SArray.java
+!/Compiler/SClassDesc.java
+!/Compiler/SIntfDesc.java
+!/Compiler/SIntfMap.java
+!/Compiler/SMthdBlock.java
