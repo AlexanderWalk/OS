@@ -4,7 +4,40 @@ import Output.Colors.StaticColors;
 import Output.Console;
 
 public class Kernel {
+    private static final int GDTBASE = 0x10000;
     public static void main() {
+        Console c = new Console();
+        c.clearConsole();
+        c.println("Interrupttests:");
+        Interrupts.registerHandlers();
+        //Interrupts.ClearInterruptFlag();
+        //Interrupts.SetInterruptFlag();
+        MAGIC.inline(0xCC);
+        while(true);
+        //consoleCheck();
+    }
+
+    private static void writeGDT() {
+        MAGIC.wMem32(GDTBASE, 0x00000000);
+        MAGIC.wMem32(GDTBASE+4, 0x00000000);
+        MAGIC.wMem32(GDTBASE+8, 0x0000FFFF);
+        MAGIC.wMem32(GDTBASE+12, 0x00CF9A00);
+        MAGIC.wMem32(GDTBASE+16, 0x0000FFFF);
+        MAGIC.wMem32(GDTBASE+20, 0x00CF9200);
+        MAGIC.wMem32(GDTBASE+24, 0x0000FFFF);
+        MAGIC.wMem32(GDTBASE+28, 0x008F9A06);
+    }
+
+    private static void lGDTR(int count) {
+        //LGDTR
+        long offs=0, tmp;
+        MAGIC.ignore(offs);
+        tmp = (((long)GDTBASE)<<16) | (((long)4<<count)-1);
+        MAGIC.ignore(tmp);
+        MAGIC.inline(0x0F, 0x01, 0x5D, 0xF0); // lidt [e/rbp-0x10]}
+    }
+
+    private static void consoleCheck(){
         Console console = new Console();
         console.clearConsole();
         console.setCursor(0,0);
