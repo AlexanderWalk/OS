@@ -1,4 +1,4 @@
-import kernel.Interrupts;
+package kernel;
 
 public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;

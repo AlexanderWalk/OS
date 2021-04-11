@@ -1,4 +1,4 @@
-package Output.Colors;
+package output.colors;
 
 public class ColorController {
 

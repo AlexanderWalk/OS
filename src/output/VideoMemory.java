@@ -1,4 +1,4 @@
-package Output;
+package output;
 
 class VideoMemory {
     private static final int startAddress =0xB8000;

@@ -1,6 +1,6 @@
 package kernel;
 
-import Output.Console;
+import output.Console;
 
 public class Interrupts {
     private static final int MASTER = 0x20, SLAVE = 0xA0;
@@ -15,6 +15,7 @@ public class Interrupts {
         int genericHandlerOffset = MAGIC.mthdOff("Interrupts","genericHandler");
         int genericHandlerwParamOffset = MAGIC.mthdOff("Interrupts","genericHandlerWithParameter");
         int hardwareInterruptOffset = MAGIC.mthdOff("Interrupts","genericHardwareInterruptHandler");
+        int timerInterruptOffset = MAGIC.mthdOff("Interrupts","timerInterruptHandler");
         int classRef = MAGIC.cast2Ref(MAGIC.clssDesc("Interrupts"));
         setIDTRegister();
         while(i<=0x07){
@@ -40,6 +41,9 @@ public class Interrupts {
             i++;
         }
         //TODO:IRQ0-15
+        //Timer
+        createIDTEntry(i,MAGIC.rMem32(classRef+timerInterruptOffset)+MAGIC.getCodeOff());
+        i++;
         while(i<=0x2F){
             createIDTEntry(i,MAGIC.rMem32(classRef+hardwareInterruptOffset)+MAGIC.getCodeOff());
             i++;
@@ -54,7 +58,7 @@ public class Interrupts {
         MAGIC.inlineOffset(1, tmp);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
     }
     public static void setIDTRegisterRM() {
-        //RealMode - 1023
+        //RealMode - 1023 limit, Basisadresse bei 0 -> kein Shift nötig.
         long tableLimit =1023;
         MAGIC.inline(0x0F, 0x01, 0x5D);
         MAGIC.inlineOffset(1, tableLimit);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
@@ -105,6 +109,15 @@ public class Interrupts {
     @SJC.Interrupt
     public static void genericHardwareInterruptHandler(){
         Console.directDebugPrint("Device handled");
+    }
+
+    @SJC.Interrupt
+    public static void timerInterruptHandler(){
+        //EOI nach Abarbeiten?
+        Console.directDebugPrint("timer");
+        if(SleepTest.isWaiting)
+            SleepTest.currTimerCount++;
+        MAGIC.wIOs8(MASTER, (byte)0x20);
     }
 
     private static void hardwareEOI(int port){

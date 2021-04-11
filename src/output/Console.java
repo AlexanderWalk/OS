@@ -1,6 +1,6 @@
-package Output;
+package output;
 
-import Output.Colors.*;
+import output.colors.*;
 
 public class Console {
     public final ConsoleColor currentColor= new ConsoleColor();

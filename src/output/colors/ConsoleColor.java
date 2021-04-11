@@ -1,4 +1,4 @@
-package Output.Colors;
+package output.colors;
 
 public class ConsoleColor{
     protected int color;
