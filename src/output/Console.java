@@ -94,7 +94,7 @@ public class Console {
 
     public void printHex(byte b){
         int byteCount=1;
-        this.printHexvalue((long)b,byteCount);
+        this.printHexvalue((int)b,byteCount);
     }
 
     public void printlnHex(byte b){
@@ -104,7 +104,7 @@ public class Console {
 
     public void printHex(short value){
         int byteCount=2;
-        this.printHexvalue((long)value,byteCount);
+        this.printHexvalue((int)value,byteCount);
     }
 
     public void printlnHex(short value){
@@ -114,7 +114,7 @@ public class Console {
 
     public void printHex(int value){
         int byteCount=4;
-        this.printHexvalue((long)value,byteCount);
+        this.printHexvalue(value,byteCount);
     }
 
     public void printlnHex(int value){
@@ -125,7 +125,10 @@ public class Console {
     //TODO: Überprüfen, da nur 32 Bit..
     public void printHex(long value){
         int byteCount=8;
-        this.printHexvalue((long)value,byteCount);
+        int lowerInt = (int)value;
+        value = value>>32;
+        int higherInt = (int)value;
+        this.printHexvalue((int)value,byteCount);
     }
 
     public void printlnHex(long value){
@@ -134,11 +137,12 @@ public class Console {
     }
 
     //TODO: Hex überarbeiten, lesbarer machen, ggf eigene Klasse -> HexHandler
-    //Ruft die einzelnen Bytes des Inputs, ausgehend vom größten Byte, auf und gibt die Hexvalue jedes Bytes aus.
-    private void printHexvalue(long value, int byteCount){
+    //Uses printByteAsHex for every Byte from heighest one to lowest one
+    private void printHexvalue(int value, int byteCount){
         int byteOffset=8;
-        long currentByte;
+        int currentByte;
         int currentOffset=byteOffset*(byteCount-1);
+        this.printHexPrefix();
         while(currentOffset>=0){
             currentByte=value>>currentOffset;
             printByteAsHex((byte)currentByte);
@@ -146,18 +150,22 @@ public class Console {
         }
     }
 
-    //extrahiert beide Hexvalues aus dem Byte und gibt die höhere Value zuerst aus
+    //prints a single byte as Hex
     private void printByteAsHex(byte b){
         byte hexMask = 0x0F;
         byte HexOffset = 4;
         int firstHex = b & hexMask;
-        b= (byte) (b>>HexOffset);
+        b= (byte) (b>>(byte)HexOffset);
         int secondHex = b & hexMask;
         this.print(getHexChar(secondHex));
         this.print(getHexChar(firstHex));
     }
 
-    //gibt die Chars 0-9, A-F anhand der value zurück.
+    private void printHexPrefix(){
+        this.print("0x");
+    }
+
+    //Converts int value to Hex value.
     private char getHexChar(int value){
         int charOffset = 48;
         int hexCharOffset = 7;

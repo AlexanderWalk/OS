@@ -1,5 +1,7 @@
 package kernel;
 
+import kernel.Interrupt.Interrupts;
+
 public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;
   private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;

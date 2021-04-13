@@ -1,5 +1,7 @@
 package kernel;
 
+import Devices.Timer;
+import kernel.Interrupt.Interrupts;
 import output.Console;
 import output.colors.StaticColors;
 
@@ -7,31 +9,41 @@ public class Kernel {
     private static final int GDTBASE = 0x10000;
     public static void main() {
         //while(true);
+
+        //For static Blocks
         MAGIC.doStaticInit();
-        Console c = new Console();
-        c.clearConsole();
-        c.println("Interrupttests:");
+        //Interrupt setup
         Interrupts.registerHandlers();
         Interrupts.initPic();
+        //Activate Interrupts - Dangerous
         Interrupts.SetInterruptFlag();
+
+        Console console = new Console();
+        console.clearConsole();
+        console.print("TEST");
+        //console.print('ß');
+        //console.setCursor(20,11);
+        //while(true);
+        //consoleCheck(console);
+        //interruptCheck();
     }
 
     private static void interruptCheck(){
+        Console c = new Console();
+        c.println("Interrupttests:");
         MAGIC.inline(0xCC);
         BIOS.regs.EAX=0x0013;
         BIOS.rint(0x10);
         for(int i=0;i<32000;i++){
             MAGIC.wMem8(0xA0000+i,(byte)0x4B);
         }
-        SleepTest.sleep(5);
+        Timer.sleep(5);
         BIOS.regs.EAX=0x0003;
         BIOS.rint(0x10);
     }
 
-    private static void consoleCheck(){
-        Console console = new Console();
-        console.clearConsole();
-        console.setCursor(0,0);
+    private static void consoleCheck(Console console){
+        //console.setCursor(10,10);
         console.print('A');
         console.println();
         console.setColor(StaticColors.font_cyan,StaticColors.defaultBack);
@@ -64,10 +76,10 @@ public class Kernel {
         console.printlnHex(hex4);
         console.printlnHex(hex5);
         console1.printlnHex(hex6);
-        for(int i=0;i<11;i++){
+        /*for(int i=0;i<11;i++){
             console.println();
-        }
+        }*/
         //Overflow Check
-        console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde --");
+        //console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde --");
     }
 }

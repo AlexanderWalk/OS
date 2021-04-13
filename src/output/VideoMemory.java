@@ -25,9 +25,10 @@ class VideoMemory {
         nextRow();
     }
 
+    //Returns real Address from relative X and Y
     private static int getVidMemPosition(int row, int entryPosition){
         if(entryPosition<firstEntry||entryPosition>entriesPerRow||row<firstRow||row>rowCount){
-            //TODO: Exception..
+            //TODO
         }
         return startAddress + (row * entriesPerRow + entryPosition)*bytesPerEntry;
     }
@@ -62,6 +63,7 @@ class VideoMemory {
     }
 
     static void clearMemory(){
+        //setCursor(firstEntry,firstRow);
         for(int i = firstRow; i<rowCount;i++){
             clearRow(i);
         }

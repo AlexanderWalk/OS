@@ -1,12 +1,13 @@
-package kernel;
+package kernel.Interrupt;
 
 import Devices.Keyboard;
+import Devices.Timer;
 import output.Console;
 
 public class Interrupts {
     private static final int MASTER = 0x20, SLAVE = 0xA0;
     private static boolean IsInterruptFlagActive = false;
-    //Stack frei ab 0x07E00
+    //First free Address 0x07E00
     private static final int IDTStartAdress = 0x07E00;
     private static final int bytesPerEntry = 8;
     private static final int entryCount = 48;
@@ -25,15 +26,15 @@ public class Interrupts {
         }
         //Double Fault
         createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
-        //reserviert
+        //reserved
         while(i<=0x0C){
             createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
-        //General protection Error und Page fault
+        //General protection Error and Page fault
         while(i<0x0E){
             createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
         }
-        //0x0F bis 0x1F reserviert
+        //0x0F bis 0x1F reserved
         while(i<=0x1F){
             createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
@@ -42,20 +43,24 @@ public class Interrupts {
         createIDTEntry(i++,MAGIC.rMem32(classRef+timerInterruptOffset)+MAGIC.getCodeOff());
         //Keyboard
         createIDTEntry(i++,MAGIC.rMem32(classRef+keyboardInterruptOffset)+MAGIC.getCodeOff());
+        //Other devices
         while(i<=0x2F){
             createIDTEntry(i++,MAGIC.rMem32(classRef+hardwareInterruptOffset)+MAGIC.getCodeOff());
         }
     }
 
+
     public static void setIDTRegister() {
-        //Table-Anfang und limit
-        int tableLimit =bytesPerEntry*entryCount-1;
+        //Table-Start and limit
+        int tableLimit =bytesPerEntry*entryCount-1;//-1, da Offset für letztes Byte
         long tmp=(((long) IDTStartAdress)<<16)|(long)tableLimit;
         MAGIC.inline(0x0F, 0x01, 0x5D);
         MAGIC.inlineOffset(1, tmp);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
     }
+
+
     public static void setIDTRegisterRM() {
-        //RealMode - 1023 limit, Basisadresse bei 0 -> kein Shift nötig.
+        //RealMode - 1023 limit, BaseAddress 0 -> no shift.
         long tableLimit =1023;
         MAGIC.inline(0x0F, 0x01, 0x5D);
         MAGIC.inlineOffset(1, tableLimit);// lidt [ebp-0x08/tmp] - Phase 3 Seite 2
@@ -74,7 +79,7 @@ public class Interrupts {
     }
 
     //STI
-    static void SetInterruptFlag(){
+    public static void SetInterruptFlag(){
         if(!IsInterruptFlagActive){
             IsInterruptFlagActive = true;
             MAGIC.inline(0xFB);
@@ -82,52 +87,55 @@ public class Interrupts {
     }
 
     //CLI
-    static void ClearInterruptFlag(){
+    public static void ClearInterruptFlag(){
         if(IsInterruptFlagActive){
             IsInterruptFlagActive = false;
             MAGIC.inline(0xFA);
         }
     }
 
+    //TODO: Handler aufsplitten
+
+    //Interrupt Placeholder #1
     @SJC.Interrupt
     private static void genericHandler(){
-        //TODO
         Console.directDebugPrint("handled.");
     }
 
+    //Interrupt Placeholder #2
     @SJC.Interrupt
     private static void genericHandlerWithParameter(int param){
-        //TODO
         Console.directDebugPrint("handled with parameter");
     }
 
-    //Todo: In eigene Klasse - Interrupt für Timer und Tastatur erstellen
-
+    //Interrupt Placeholder #3
     @SJC.Interrupt
     public static void genericHardwareInterruptHandler(){
         Console.directDebugPrint("Device handled");
+        hardwareEOI(SLAVE);
+        hardwareEOI(MASTER);
     }
 
     @SJC.Interrupt
     public static void timerInterruptHandler(){
-        //EOI nach Abarbeiten?
         //Console.directDebugPrint("timer");
-        if(SleepTest.isWaiting)
-            SleepTest.currTimerCount++;
-        MAGIC.wIOs8(MASTER, (byte)0x20);
+        Timer.increaseTimer();
+        hardwareEOI(MASTER);
     }
 
     @SJC.Interrupt
     public static void keyboardInterruptHandler(){
         Keyboard.storeByte();
         //Console.directDebugPrint("Keyboardbyte stored");
-        MAGIC.wIOs8(MASTER, (byte)0x20);
+        hardwareEOI(MASTER);
     }
 
+    //End of Interrupt for every Hardwareinterrupt
     private static void hardwareEOI(int port){
         MAGIC.wIOs8(port,(byte)0x20);
     }
 
+    //Initialize PIC for Hardwareinterrupts
     public static void initPic() {
         programmChip(MASTER, 0x20, 0x04); //init offset and slave config of master
         programmChip(SLAVE, 0x28, 0x02); //init offset and slave config of slave
