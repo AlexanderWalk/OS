@@ -7,14 +7,17 @@ public class Kernel {
     private static final int GDTBASE = 0x10000;
     public static void main() {
         //while(true);
+        MAGIC.doStaticInit();
         Console c = new Console();
         c.clearConsole();
         c.println("Interrupttests:");
-        Interrupts.initPic();
         Interrupts.registerHandlers();
-        Interrupts.ClearInterruptFlag();
+        Interrupts.initPic();
         Interrupts.SetInterruptFlag();
-        //MAGIC.inline(0xCC);
+    }
+
+    private static void interruptCheck(){
+        MAGIC.inline(0xCC);
         BIOS.regs.EAX=0x0013;
         BIOS.rint(0x10);
         for(int i=0;i<32000;i++){
@@ -23,8 +26,6 @@ public class Kernel {
         SleepTest.sleep(5);
         BIOS.regs.EAX=0x0003;
         BIOS.rint(0x10);
-        //MAGIC.inline(0xCC);
-        //consoleCheck();
     }
 
     private static void consoleCheck(){

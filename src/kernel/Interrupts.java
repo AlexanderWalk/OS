@@ -1,5 +1,6 @@
 package kernel;
 
+import Devices.Keyboard;
 import output.Console;
 
 public class Interrupts {
@@ -16,37 +17,33 @@ public class Interrupts {
         int genericHandlerwParamOffset = MAGIC.mthdOff("Interrupts","genericHandlerWithParameter");
         int hardwareInterruptOffset = MAGIC.mthdOff("Interrupts","genericHardwareInterruptHandler");
         int timerInterruptOffset = MAGIC.mthdOff("Interrupts","timerInterruptHandler");
+        int keyboardInterruptOffset = MAGIC.mthdOff("Interrupts","keyboardInterruptHandler");
         int classRef = MAGIC.cast2Ref(MAGIC.clssDesc("Interrupts"));
         setIDTRegister();
         while(i<=0x07){
-            createIDTEntry(i,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-            i++;
+            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
         //Double Fault
-        createIDTEntry(i,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
-        i++;
+        createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
         //reserviert
         while(i<=0x0C){
-            createIDTEntry(i,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-            i++;
+            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
         //General protection Error und Page fault
         while(i<0x0E){
-            createIDTEntry(i,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
-            i++;
+            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
         }
         //0x0F bis 0x1F reserviert
         while(i<=0x1F){
-            createIDTEntry(i,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-            i++;
+            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
         //TODO:IRQ0-15
         //Timer
-        createIDTEntry(i,MAGIC.rMem32(classRef+timerInterruptOffset)+MAGIC.getCodeOff());
-        i++;
+        createIDTEntry(i++,MAGIC.rMem32(classRef+timerInterruptOffset)+MAGIC.getCodeOff());
+        //Keyboard
+        createIDTEntry(i++,MAGIC.rMem32(classRef+keyboardInterruptOffset)+MAGIC.getCodeOff());
         while(i<=0x2F){
-            createIDTEntry(i,MAGIC.rMem32(classRef+hardwareInterruptOffset)+MAGIC.getCodeOff());
-            i++;
+            createIDTEntry(i++,MAGIC.rMem32(classRef+hardwareInterruptOffset)+MAGIC.getCodeOff());
         }
     }
 
@@ -114,9 +111,16 @@ public class Interrupts {
     @SJC.Interrupt
     public static void timerInterruptHandler(){
         //EOI nach Abarbeiten?
-        Console.directDebugPrint("timer");
+        //Console.directDebugPrint("timer");
         if(SleepTest.isWaiting)
             SleepTest.currTimerCount++;
+        MAGIC.wIOs8(MASTER, (byte)0x20);
+    }
+
+    @SJC.Interrupt
+    public static void keyboardInterruptHandler(){
+        Keyboard.storeByte();
+        //Console.directDebugPrint("Keyboardbyte stored");
         MAGIC.wIOs8(MASTER, (byte)0x20);
     }
 
