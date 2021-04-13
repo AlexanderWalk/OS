@@ -1,6 +1,6 @@
 package Devices;
 
-import kernel.ByteRingBuffer;
+import DataStructures.ByteRingBuffer;
 import output.Console;
 
 public class Keyboard {

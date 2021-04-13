@@ -1,4 +1,4 @@
-package kernel;
+package DataStructures;
 
 import output.Console;
 
@@ -8,7 +8,7 @@ public class ByteRingBuffer {
     private byte[] buffer;
     private int readPtr=0;
     private int writePtr=0;
-    private Console c = new Console();
+    //private Console c = new Console();
 
     public ByteRingBuffer(){
         this(defaultSize);
