@@ -41,7 +41,7 @@ public class DynamicRuntime {
     rlE=MAGIC.getInstRelocEntries("SArray");
     if (arrDim>1 || entrySize<0) rlE+=length;
     else scS+=length*entrySize;
-    me=(SArray)newInstance(scS, rlE, MAGIC.clssDesc("SArray"));
+    me=(SArray)newInstance(scS, rlE, (SClassDesc) MAGIC.clssDesc("SArray"));
     MAGIC.assign(me.length, length);
     MAGIC.assign(me._r_dim, arrDim);
     MAGIC.assign(me._r_stdType, stdType);
