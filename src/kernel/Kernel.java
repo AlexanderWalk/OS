@@ -1,12 +1,13 @@
 package kernel;
 
+import Devices.Keyboard;
+import Devices.KeyboardEvent;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
 import output.Console;
 import output.colors.StaticColors;
 
 public class Kernel {
-    private static final int GDTBASE = 0x10000;
     public static void main() {
         //while(true);
 
@@ -17,10 +18,18 @@ public class Kernel {
         Interrupts.initPic();
         //Activate Interrupts - Dangerous
         Interrupts.SetInterruptFlag();
-
         Console console = new Console();
         console.clearConsole();
-        console.print("TEST");
+        //console.print("TESTsaa");
+        //MAGIC.inline(0xCC);
+        while(true){
+            Keyboard.processInputBuffer();
+            KeyboardEvent keyboardEvent;
+            if(Keyboard.eventAvailable()){
+                keyboardEvent = Keyboard.getKeyboardEvent();
+                console.print((char)keyboardEvent.keyCode);
+            }
+        }
         //console.print('ß');
         //console.setCursor(20,11);
         //while(true);

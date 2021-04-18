@@ -2,10 +2,10 @@ package Devices;
 
 public class KeyboardEvent {
     //Modifier
-    final boolean alt, shift, control;
+    public final boolean alt, shift, control;
     //Toggles
-    final boolean capslock, numlock, scrollock;
-    final int keyCode;
+    public final boolean capslock, numlock, scrollock;
+    public final int keyCode;
 
     public KeyboardEvent(boolean capslock, boolean alt, boolean shift, boolean control, boolean numlock,
                          boolean scrollock, int keyCode) {

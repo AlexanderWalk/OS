@@ -1,6 +1,6 @@
 package Devices;
 
-//TODO Dynamic Device
+//TODO Timer to ms
 public class Timer {
     static boolean isWaiting = false;
     static int currTimerCount = 0;

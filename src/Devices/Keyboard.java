@@ -1,16 +1,30 @@
 package Devices;
 
 import DataStructures.ByteRingBuffer;
-import output.Console;
 
 //TODO: Dynamic Device
 public class Keyboard {
-    private static ByteRingBuffer buffer;
+    private static ByteRingBuffer inBuffer;
+    private static KeyboardEventBuffer outBuffer;
+    private static KeyboardLayout keyboardLayout;
+
+    //modifier
     private static boolean shift, control, alt;
+    //toggles
     private static boolean capslock, numlock, scrolllock;
+    //single pressed modifier
+    private static boolean singleShift, singleControl, singleAlt;
+    //locking toggles until break
+    private static boolean capslock_Locked, numlock_locked, scrolllock_locked;
 
     static{
-        buffer = new ByteRingBuffer();
+        inBuffer = new ByteRingBuffer();
+        outBuffer = new KeyboardEventBuffer();
+        keyboardLayout = new QwertzLayout();
+    }
+
+    public static void setKeyboardLayout(KeyboardLayout layout) {
+        keyboardLayout = layout;
     }
 
     //store Byte from Keyboard Interrupt
@@ -19,28 +33,129 @@ public class Keyboard {
         //ignore if code >>
         if((b&0xFF)>=0xE2)
             return;
-        buffer.writeByte(b);
-        //debug
-        Console c = new Console();
-        c.printlnHex(b);
+        inBuffer.writeByte(b);
     }
 
-    public static void processInputBuffer(){
-        while(buffer.canReadOrPeekByte()){
-            byte b = buffer.readByte();
-            if((b&0xFF)==0xE0){
 
-            } else if((b&0xFF)==0xE1){
+    public static void processInputBuffer() {
+        while(inBuffer.canRead()) {
+            int bitmask = 0;
+            byte b = inBuffer.readByte();
+            bitmask = (bitmask | (b&0xFF));
+            // 2 Byte Scancode
+            if ((b&0xFF)==0xE0) {
+                byte b2 = inBuffer.readByte();
+                bitmask = (bitmask << 8) | (b2&0xFF);
+            } else
+                //3 Byte Scancode
+                if ((b&0xFF)==0xE1) {
+                byte b2 = inBuffer.readByte();
+                byte b3 = inBuffer.readByte();
+                bitmask = ((bitmask << 16) | (b2&0xFF) << 8) | (b3&0xFF);
+            }
+            int key=0;
+            //breakkey, if highest bit is set
+            boolean breakKey = (bitmask & 0xFF) >= 0x80;
+            //get key
+            int physKey = bitmask & 0xFFFFFF7F;
+            key = keyboardLayout.translatePhysToLogicalKey(physKey, shift, capslock, alt);
+            switch (key) {
+                //modifier
+                case Key.LEFT_SHIFT:
+                case Key.RIGHT_SHIFT:
+                    if (breakKey) {
+                        shift = false;
+                        if (singleShift) {
+                            writeEvent(key);
+                            singleShift = false;
+                        }
+                    } else {
+                        shift = true;
+                        singleShift = true;
+                    }
+                    break;
+                case Key.LEFT_CONTROL:
+                case Key.RIGHT_CONTROL:
+                    if (breakKey) {
+                        control = false;
+                        if (singleControl) {
+                            writeEvent(key);
+                            singleControl = false;
+                        }
+                    } else {
+                        control = true;
+                        singleControl = true;
+                    }
+                    break;
+                case Key.LEFT_ALT:
+                case Key.RIGHT_ALT:
+                    if (breakKey) {
+                        alt = false;
+                        if (singleAlt) {
+                            writeEvent(key);
+                            singleAlt = false;
+                        }
+                    } else {
+                        alt = true;
+                        singleAlt = true;
+                    }
+                    break;
 
-            } else{
+                //toggles
+                case Key.CAPSLOCK:
+                    if (!capslock_Locked) {
+                        capslock = !capslock;
+                        capslock_Locked = true;
+                    }
+                    if (breakKey) {
+                        capslock_Locked = false;
+                    }
+                    break;
+                case Key.SCROLL_LOCK:
+                    if(!scrolllock_locked) {
+                        scrolllock = !scrolllock;
+                        scrolllock_locked = true;
+                    }
+                    if (breakKey) {
+                        scrolllock_locked = false;
+                    }
+                    break;
+                case Key.NUMLOCK:
+                    if (!numlock_locked) {
+                        numlock = !numlock;
+                        numlock_locked = true;
+                    }
+                    if (breakKey) {
+                        numlock_locked = false;
+                    }
+                    break;
 
+                //keys
+                default:
+                    if (!breakKey) {
+                        writeEvent(key);
+                        //no singlepressed toggles because another key has been pressed
+                        singleAlt = singleControl = singleShift = false;
+                    }
             }
         }
     }
 
-    public static boolean eventAvailable(){
-        return false;
-        //if(buffer.canReadOrPeekByte())
+    private static void writeEvent(int key){
+        outBuffer.writeEvent(new KeyboardEvent(capslock,alt,shift,control,numlock,scrolllock,key));
     }
 
+    //True, if an event can be read from the buffer
+    public static boolean eventAvailable(){
+        return outBuffer.canRead();
+    }
+
+    public static KeyboardEvent getKeyboardEvent() {
+        return outBuffer.readEvent();
+    }
+
+    public static void clearBuffers() {
+        inBuffer.clearBuffer();
+        outBuffer.clearBuffer();
+    }
 }

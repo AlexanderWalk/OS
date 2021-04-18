@@ -15,12 +15,17 @@ public class Interrupts {
     public static void registerHandlers() {
         int i=0;
         int genericHandlerOffset = MAGIC.mthdOff("Interrupts","genericHandler");
+        int breakpointOffset = MAGIC.mthdOff("Interrupts","bpHandler");
         int genericHandlerwParamOffset = MAGIC.mthdOff("Interrupts","genericHandlerWithParameter");
         int hardwareInterruptOffset = MAGIC.mthdOff("Interrupts","genericHardwareInterruptHandler");
         int timerInterruptOffset = MAGIC.mthdOff("Interrupts","timerInterruptHandler");
         int keyboardInterruptOffset = MAGIC.mthdOff("Interrupts","keyboardInterruptHandler");
         int classRef = MAGIC.cast2Ref(MAGIC.clssDesc("Interrupts"));
         setIDTRegister();
+        while(i<=0x02){
+            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
+        }
+        createIDTEntry(i++,MAGIC.rMem32(classRef+breakpointOffset)+MAGIC.getCodeOff());
         while(i<=0x07){
             createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
         }
@@ -100,6 +105,12 @@ public class Interrupts {
     @SJC.Interrupt
     private static void genericHandler(){
         Console.directDebugPrint("handled.");
+    }
+
+    @SJC.Interrupt
+    private static void bpHandler(){
+        Console.directDebugPrint("Breakpoint");
+        while(true);
     }
 
     //Interrupt Placeholder #2
