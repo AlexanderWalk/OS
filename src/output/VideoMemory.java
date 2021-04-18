@@ -70,7 +70,7 @@ class VideoMemory {
     }
 
     static void setCursor(int positionInRow, int row) {
-        int position = getVidMemPosition(positionInRow,row);
+        int position = row * entriesPerRow + positionInRow;
         MAGIC.wIOs8(0x3D4, (byte)0x0F);
         MAGIC.wIOs8(0x3D5, (byte)(position&0xFF));
         MAGIC.wIOs8(0x3D4, (byte)0x0E);
