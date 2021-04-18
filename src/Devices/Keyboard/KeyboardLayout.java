@@ -1,4 +1,4 @@
-package Devices;
+package Devices.Keyboard;
 
 public abstract class KeyboardLayout {
     public abstract int translatePhysToLogicalKey(int physKey, boolean shift, boolean caps, boolean alt);

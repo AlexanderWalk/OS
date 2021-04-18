@@ -1,4 +1,4 @@
-package Devices;
+package Devices.Keyboard;
 
 /** @noinspection unused*/
 public class Key {

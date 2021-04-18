@@ -1,6 +1,6 @@
 package kernel.Interrupt;
 
-import Devices.Keyboard;
+import Devices.Keyboard.Keyboard;
 import Devices.Timer;
 import output.Console;
 
@@ -8,7 +8,7 @@ public class Interrupts {
     private static final int MASTER = 0x20, SLAVE = 0xA0;
     private static boolean IsInterruptFlagActive = false;
     //First free Address 0x07E00
-    private static final int IDTStartAdress = 0x07E00;
+    private static final int IDTStartAdress = 0x8000;
     private static final int bytesPerEntry = 8;
     private static final int entryCount = 48;
 

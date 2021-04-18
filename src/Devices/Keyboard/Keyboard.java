@@ -1,4 +1,4 @@
-package Devices;
+package Devices.Keyboard;
 
 import DataStructures.ByteRingBuffer;
 

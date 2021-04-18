@@ -1,7 +1,7 @@
 package kernel;
 
-import Devices.Keyboard;
-import Devices.KeyboardEvent;
+import Devices.Keyboard.Keyboard;
+import Devices.Keyboard.KeyboardEvent;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
 import output.Console;
@@ -18,23 +18,44 @@ public class Kernel {
         Interrupts.initPic();
         //Activate Interrupts - Dangerous
         Interrupts.SetInterruptFlag();
+
         Console console = new Console();
         console.clearConsole();
-        //console.print("TESTsaa");
-        //MAGIC.inline(0xCC);
-        while(true){
+
+        //PHASE 4B
+
+        //TODO: Auslagern
+        boolean textinput = true;
+        console.println("Texteingabe: 0 zum Beenden druecken");
+        while(textinput){
             Keyboard.processInputBuffer();
             KeyboardEvent keyboardEvent;
             if(Keyboard.eventAvailable()){
                 keyboardEvent = Keyboard.getKeyboardEvent();
+                if((char)keyboardEvent.keyCode == '0')
+                    textinput=false;
                 console.print((char)keyboardEvent.keyCode);
             }
         }
-        //console.print('ß');
-        //console.setCursor(20,11);
-        //while(true);
-        //consoleCheck(console);
-        //interruptCheck();
+        console.println("Texteingabe aus");
+
+        //PHASE 4C
+        int i = 0;
+        do {
+            MemoryMapEntry map = BIOS.getMemoryMap(i);
+            //get new continuationIndex from EBX
+            i = BIOS.regs.EBX;
+            //if type is 1 - memory not free
+            console.printHex(map.baseAddress);
+            console.print(" ");
+            console.printHex(map.length);
+            console.print(" ");
+            if(map.type == 1){
+                console.println("free");
+            } else{
+                console.println("reserved");
+            }
+        } while (i != 0);
     }
 
     private static void interruptCheck(){

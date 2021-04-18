@@ -6,14 +6,15 @@ public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;
   private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;
   private final static int BIOS_STKBSE = BIOS_STKEND-0x28;
-  
+  private final static int memBuffAddress = 0x7E00;
+
   public static class BIOSRegs extends STRUCT {
     public short DS, ES, FS, FLAGS;
     public int EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX;
   }
-  
+
   public final static BIOSRegs regs = (BIOSRegs)MAGIC.cast2Struct(BIOS_STKBSE);
-  
+
   public final static short F_CARRY  = 0x0001;
   public final static short F_PARITY = 0x0004;
   public final static short F_AUX    = 0x0010;
@@ -187,5 +188,19 @@ public class BIOS {
     MAGIC.inline(0x5E); //pop e/rsi
     Interrupts.setIDTRegister();
     MAGIC.inline(0x9D); //popf
+  }
+
+  public static MemoryMapEntry getMemoryMap(int i) {
+    //BIOSBuffer buffer = (BIOSBuffer) MAGIC.cast2Struct(memReadBuffer);
+    regs.EAX = 0x0000E820;
+    regs.EDX = 0x534D4150;
+    regs.EBX = i;
+    regs.ECX = 20;
+    regs.EDI = memBuffAddress;
+    rint(0x15);
+    long baseAddr = MAGIC.rMem64(memBuffAddress);
+    long length = MAGIC.rMem64(memBuffAddress + 8);
+    int type = MAGIC.rMem32(memBuffAddress + 16);
+    return new MemoryMapEntry(baseAddr, length, type);
   }
 }

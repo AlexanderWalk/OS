@@ -1,126 +1,113 @@
-package Devices;
+package Devices.Keyboard;
 
-public class QWERTYLayout extends KeyboardLayout {
+public class QwertzLayout extends KeyboardLayout{
     @Override
     public int translatePhysToLogicalKey(int physKey, boolean shift, boolean caps, boolean alt) {
         boolean upperCase = shift ^ caps;
-    /* Debug
-    Console.debug("t");
-    if (shift) {
-        Console.debug("s");
-    }
-    if (caps) {
-        Console.debug("c");
-    }
-    if (upperCase) {
-        Console.debug("u");
-    }*/
-        switch (physKey) {
+        switch(physKey){
             case 0x01:
                 return Key.ESCAPE;
             case 0x02:
-                if (upperCase)
+                if(upperCase)
                     return Key.EXCLAMATION_MARK;
                 return Key.ONE;
             case 0x03:
-                if (upperCase)
-                    return Key.AT_SIGN;
+                if(upperCase)
+                    return Key.QUOTATION_MARK;
                 return Key.TWO;
             case 0x04:
-                if (upperCase)
-                    return Key.POUND_KEY;
+                if(upperCase)
+                    return Key.SECTION_KEY;
                 return Key.THREE;
             case 0x05:
-                if (upperCase)
+                if(upperCase)
                     return Key.DOLLAR_KEY;
                 return Key.FOUR;
             case 0x06:
-                if (upperCase)
+                if(upperCase)
                     return Key.PERCENT_KEY;
                 return Key.FIVE;
             case 0x07:
-                if (upperCase)
-                    return Key.PERCENT_KEY;
+                if(upperCase)
+                    return Key.AMPERSAND;
                 return Key.SIX;
             case 0x08:
-                if (upperCase)
-                    return Key.AMPERSAND;
+                if(upperCase)
+                    return Key.SLASH;
                 return Key.SEVEN;
             case 0x09:
-                if (upperCase)
-                    return Key.STAR;
+                if(upperCase)
+                    return Key.LEFT_ROUND_BRACKET;
                 return Key.EIGHT;
             case 0x0A:
-                if (upperCase)
-                    return Key.LEFT_ROUND_BRACKET;
+                if(upperCase)
+                    return Key.RIGHT_ROUND_BRACKET;
                 return Key.NINE;
             case 0x0B:
-                if (upperCase)
-                    return Key.RIGHT_ROUND_BRACKET;
+                if(upperCase)
+                    return Key.EQUALS_SIGN;
                 return Key.ZERO;
             case 0x0C:
-                if (upperCase) {
-                    return Key.UNDERSCORE;
-                }
-                return Key.MINUS;
+                if(upperCase)
+                    return Key.QUESTION_MARK;
+                return Key.SHARPS;
             case 0x0D:
-                if (upperCase)
-                    return Key.PLUS;
-                return Key.EQUALS_SIGN;
+                if(upperCase)
+                    return Key.GRAVE_ACCENT;
+                return Key.AIGU_ACCENT;
             case 0x0E:
                 return Key.BACKSPACE;
             case 0x0F:
                 return Key.TAB;
             case 0x10:
-                if (upperCase)
+                if(upperCase)
                     return Key.Q;
                 return Key.q;
             case 0x11:
-                if (upperCase)
+                if(upperCase)
                     return Key.W;
                 return Key.w;
             case 0x12:
-                if (upperCase)
+                if(upperCase)
                     return Key.E;
                 return Key.e;
             case 0x13:
-                if (upperCase)
+                if(upperCase)
                     return Key.R;
                 return Key.r;
             case 0x14:
-                if (upperCase)
+                if(upperCase)
                     return Key.T;
                 return Key.t;
             case 0x15:
-                if (upperCase)
-                    return Key.Y;
-                return Key.y;
+                if(upperCase)
+                    return Key.Z;
+                return Key.z;
             case 0x16:
-                if (upperCase)
+                if(upperCase)
                     return Key.U;
                 return Key.u;
             case 0x17:
-                if (upperCase)
+                if(upperCase)
                     return Key.I;
                 return Key.i;
             case 0x18:
-                if (upperCase)
+                if(upperCase)
                     return Key.O;
                 return Key.o;
             case 0x19:
-                if (upperCase)
+                if(upperCase)
                     return Key.P;
                 return Key.p;
             case 0x1A:
-                if (upperCase)
-                    return Key.LEFT_CURLY_BRACKET;
-                return Key.LEFT_SQUARE_BRACKET;
+                if(upperCase)
+                    return Key.UE;
+                return Key.ue;
             case 0x1B:
-                if (upperCase)
-                    return Key.RIGHT_CURLY_BRACKET;
-                return Key.RIGHT_SQUARE_BRACKET;
+                if(upperCase)
+                    return Key.STAR;
+                return Key.PLUS;
             case 0x1C:
-                return Key.ENTER;
             case 0xE01C:
                 return Key.ENTER;
             case 0x1D:
@@ -128,109 +115,109 @@ public class QWERTYLayout extends KeyboardLayout {
             case 0xE01D:
                 return Key.RIGHT_CONTROL;
             case 0x1E:
-                if (upperCase)
+                if(upperCase)
                     return Key.A;
                 return Key.a;
             case 0x1F:
-                if (upperCase)
+                if(upperCase)
                     return Key.S;
                 return Key.s;
             case 0x20:
-                if (upperCase)
+                if(upperCase)
                     return Key.D;
                 return Key.d;
             case 0x21:
-                if (upperCase)
+                if(upperCase)
                     return Key.F;
                 return Key.f;
             case 0x22:
-                if (upperCase)
+                if(upperCase)
                     return Key.G;
                 return Key.g;
             case 0x23:
-                if (upperCase)
+                if(upperCase)
                     return Key.H;
                 return Key.h;
             case 0x24:
-                if (upperCase)
+                if(upperCase)
                     return Key.J;
                 return Key.j;
             case 0x25:
-                if (upperCase)
+                if(upperCase)
                     return Key.K;
                 return Key.k;
             case 0x26:
-                if (upperCase)
+                if(upperCase)
                     return Key.L;
                 return Key.l;
             case 0x27:
-                if (upperCase)
-                    return Key.COLON;
-                return Key.SEMICOLON;
+                if(upperCase)
+                    return Key.OE;
+                return Key.oe;
             case 0x28:
-                if (upperCase)
-                    return Key.SINGLE_QUOTE;
-                return Key.QUOTATION_MARK;
+                if(upperCase)
+                    return Key.AE;
+                return Key.ae;
             case 0x29:
-                if (upperCase)
-                    return Key.TILDE;
-                return Key.GRAVE_ACCENT;
+                if(upperCase)
+                    return Key.DEGREE_SIGN;
+                return Key.CARET;
             case 0x2A:
                 return Key.LEFT_SHIFT;
             case 0x2B:
-                if (upperCase)
-                    return Key.VERTICAL_BAR;
-                return Key.BACKSLASH;
+                if(upperCase)
+                    return Key.SINGLE_QUOTE;
+                return Key.POUND_KEY;
             case 0x2C:
-                if (upperCase)
-                    return Key.Z;
-                return Key.Z;
+                if(upperCase)
+                    return Key.Y;
+                return Key.y;
             case 0x2D:
-                if (upperCase)
+                if(upperCase)
                     return Key.X;
                 return Key.x;
             case 0x2E:
-                if (upperCase)
+                if(upperCase)
                     return Key.C;
                 return Key.c;
             case 0x2F:
-                if (upperCase)
+                if(upperCase)
                     return Key.V;
                 return Key.v;
             case 0x30:
-                if (upperCase)
+                if(upperCase)
                     return Key.B;
                 return Key.b;
             case 0x31:
-                if (upperCase)
+                if(upperCase)
                     return Key.N;
                 return Key.n;
             case 0x32:
-                if (upperCase)
+                if(upperCase)
                     return Key.M;
                 return Key.m;
             case 0x33:
-                if (upperCase)
-                    return Key.LESS_THAN;
+                if(upperCase)
+                    return Key.SEMICOLON;
                 return Key.COMMA;
             case 0x34:
-                if (upperCase)
-                    return Key.GREATER_THAN;
+                if(upperCase)
+                    return Key.COLON;
                 return Key.DOT;
             case 0x35:
-                if (upperCase)
-                    return Key.QUESTION_MARK;
+                if(upperCase)
+                    return Key.UNDERSCORE;
+                return Key.MINUS;
+            case 0xE035:
                 return Key.SLASH;
             case 0x36:
                 return Key.RIGHT_SHIFT;
             case 0x37:
-                return Key.STAR;
-            case 0xE037:
-                return Key.PRINT_SCREEN;
+                    return Key.STAR;
             case 0x38:
                 return Key.LEFT_ALT;
             case 0xE038:
-                return Key.RIGHT_ALT;
+                return Key.ALT_GR;
             case 0x39:
                 return Key.SPACE;
             case 0x3A:
@@ -274,7 +261,6 @@ public class QWERTYLayout extends KeyboardLayout {
             case 0xE04B:
                 return Key.LEFT_ARROW;
             case 0x4C:
-            case 0x56:
                 return Key.NO_KEY;
             case 0x4D:
             case 0xE04D:
@@ -296,15 +282,21 @@ public class QWERTYLayout extends KeyboardLayout {
             case 0x53:
             case 0xE053:
                 return Key.DELETE;
+            case 0x56:
+                if(upperCase)
+                    return Key.GREATER_THAN;
+                return Key.LESS_THAN;
             case 0x57:
                 return Key.F11;
             case 0x58:
                 return Key.F12;
-            case 0x5B:
-            case 0x5C:
+            case 0xE05B:
+            case 0xE05C:
                 return Key.SUPER;
-            case 0x5D:
+            case 0xE05D:
                 return Key.MENU;
+            case 0xE11D45:
+                return Key.PAUSE;
             default:
                 return Key.NO_KEY;
         }
