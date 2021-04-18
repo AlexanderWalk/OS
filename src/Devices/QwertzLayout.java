@@ -56,7 +56,7 @@ public class QwertzLayout extends KeyboardLayout{
             case 0x0D:
                 if(upperCase)
                     return Key.GRAVE_ACCENT;
-                return Key.AGUE_ACCENT;
+                return Key.AIGU_ACCENT;
             case 0x0E:
                 return Key.BACKSPACE;
             case 0x0F:

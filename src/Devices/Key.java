@@ -4,15 +4,16 @@ package Devices;
 public class Key {
 	//extended ascii
 	public static final int NO_KEY=0;
-	public static final int SHARPS='ß';
-	public static final int SECTION_KEY='§';
-	public static final int UE='Ü';
-	public static final int OE='Ö';
-	public static final int AE='Ä';
-	public static final int ue='ü';
-	public static final int oe='ö';
-	public static final int ae='ä';
-	public static final int DEGREE_SIGN='°';
+	public static final int SHARPS=225;
+	public static final int SECTION_KEY=245;
+	public static final int UE=154;
+	public static final int OE=153;
+	public static final int AE=142;
+	public static final int ue=129;
+	public static final int oe=148;
+	public static final int ae=132;
+	public static final int DEGREE_SIGN=176;
+	public static final int AIGU_ACCENT =239;
 	//printable ascii characters 0x20 - 0x7F
 	public static final int SPACE = ' ';
 	public static final int EXCLAMATION_MARK = '!';
@@ -79,7 +80,6 @@ public class Key {
 	public static final int CARET = '^';
 	public static final int UNDERSCORE = '_';
 	public static final int GRAVE_ACCENT = '`';
-	public static final int AGUE_ACCENT ='´';
 	public static final int a = 'a';
 	public static final int b = 'b';
 	public static final int c = 'c';
