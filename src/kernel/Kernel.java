@@ -21,7 +21,8 @@ public class Kernel {
 
         Console console = new Console();
         console.clearConsole();
-
+        //TODO error
+        console.printlnHex((long)0xFFFFFFFFA123L);
         //PHASE 4B
 
         //TODO: Auslagern
@@ -37,7 +38,6 @@ public class Kernel {
                 console.print((char)keyboardEvent.keyCode);
             }
         }
-        console.println("Texteingabe aus");
 
         //PHASE 4C
         int i = 0;
