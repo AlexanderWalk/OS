@@ -1,10 +1,8 @@
 package kernel;
 
-import Devices.Keyboard.Keyboard;
-import Devices.Keyboard.KeyboardEvent;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
-import output.Console;
+import output.Console.Console;
 import output.colors.StaticColors;
 
 public class Kernel {
@@ -21,7 +19,8 @@ public class Kernel {
 
         Console console = new Console();
         console.clearConsole();
-        //TODO error
+        consoleCheck(console);
+        /*//TODO error
         console.printlnHex((long)0xFFFFFFFFA123L);
         //PHASE 4B
 
@@ -55,7 +54,7 @@ public class Kernel {
             } else{
                 console.println("reserved");
             }
-        } while (i != 0);
+        } while (i != 0);*/
     }
 
     private static void interruptCheck(){
@@ -88,7 +87,7 @@ public class Kernel {
         console.setColor(StaticColors.font_lightmagenta,StaticColors.defaultBack);
         int z = 0;
         int x = 273;
-        long y = 500000000;
+        long y = 1234567890123456L;
         int minusx = -273;
         byte hex1= (byte) 0xA1;
         byte hex2= -2;

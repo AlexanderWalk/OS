@@ -1,6 +1,6 @@
-package output;
+package output.VideoMem;
 
-class VideoMemory {
+public class VideoMemory {
     private static final int startAddress =0xB8000;
     private static final int rowCount = 25;
     private static final int firstRow = 0;
@@ -16,13 +16,28 @@ class VideoMemory {
     private static final int clearColor = 0x00;
     private static final char space = ' ';
 
-    static void writeChar(char c, int color){
+    public static void writeChar(char c, int color){
         setCharAtPosition(c,color,currRow,currEntryPosition);
         increaseCurrPosition();
     }
 
-    static void newLine(){
+    public static void newLine(){
         nextRow();
+    }
+
+    public static void clearMemory(){
+        setCursor(firstEntry,firstRow);
+        for(int i = firstRow; i<rowCount;i++){
+            clearRow(i);
+        }
+    }
+
+    public static void setCursor(int positionInRow, int row) {
+        int relposition = row * entriesPerRow + positionInRow;
+        MAGIC.wIOs8(0x3D4, (byte)0x0F);
+        MAGIC.wIOs8(0x3D5, (byte)(relposition&0xFF));
+        MAGIC.wIOs8(0x3D4, (byte)0x0E);
+        MAGIC.wIOs8(0x3D5, (byte)((relposition>>8)&0xFF));
     }
 
     //Returns real Address from relative X and Y
@@ -62,18 +77,5 @@ class VideoMemory {
         }
     }
 
-    static void clearMemory(){
-        //setCursor(firstEntry,firstRow);
-        for(int i = firstRow; i<rowCount;i++){
-            clearRow(i);
-        }
-    }
 
-    static void setCursor(int positionInRow, int row) {
-        int position = row * entriesPerRow + positionInRow;
-        MAGIC.wIOs8(0x3D4, (byte)0x0F);
-        MAGIC.wIOs8(0x3D5, (byte)(position&0xFF));
-        MAGIC.wIOs8(0x3D4, (byte)0x0E);
-        MAGIC.wIOs8(0x3D5, (byte)((position>>8)&0xFF));
-    }
 }

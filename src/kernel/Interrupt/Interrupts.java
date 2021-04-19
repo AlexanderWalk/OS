@@ -2,7 +2,7 @@ package kernel.Interrupt;
 
 import Devices.Keyboard.Keyboard;
 import Devices.Timer;
-import output.Console;
+import output.Console.DebugConsole;
 
 public class Interrupts {
     private static final int MASTER = 0x20, SLAVE = 0xA0;
@@ -104,25 +104,25 @@ public class Interrupts {
     //Interrupt Placeholder #1
     @SJC.Interrupt
     private static void genericHandler(){
-        Console.directDebugPrint("handled.");
+        DebugConsole.directDebugPrint("handled.");
     }
 
     @SJC.Interrupt
     private static void bpHandler(){
-        Console.directDebugPrint("Breakpoint");
+        DebugConsole.directDebugPrint("Breakpoint");
         while(true);
     }
 
     //Interrupt Placeholder #2
     @SJC.Interrupt
     private static void genericHandlerWithParameter(int param){
-        Console.directDebugPrint("handled with parameter");
+        DebugConsole.directDebugPrint("handled with parameter");
     }
 
     //Interrupt Placeholder #3
     @SJC.Interrupt
     public static void genericHardwareInterruptHandler(){
-        Console.directDebugPrint("Device handled");
+        DebugConsole.directDebugPrint("Device handled");
         hardwareEOI(SLAVE);
         hardwareEOI(MASTER);
     }

@@ -1,5 +1,6 @@
-package output;
+package output.Console;
 
+import output.VideoMem.VideoMemory;
 import output.colors.*;
 
 public class Console {
@@ -17,24 +18,11 @@ public class Console {
         VideoMemory.clearMemory();
     }
 
-    public static void clearConsoleDebug(){
-        VideoMemory.clearMemory();
-    }
-
-    public static void directDebugPrint(String string) {
-        if(string!=null)
-            for (int i=0; i<string.length(); i++)
-                directDebugPrint(string.charAt(i));
-    }
-
-    public static void directDebugPrint(char c) {
-        VideoMemory.writeChar(c,StaticColors.back_black|StaticColors.font_grey);
-    }
-
     public void println(){
         VideoMemory.newLine();
     }
 
+    //Actual printing
     public void print(char c) {
         VideoMemory.writeChar(c,this.currentColor.getColor());
     }
@@ -44,6 +32,7 @@ public class Console {
         this.println();
     }
 
+    //Strings
     public void print(String string) {
         if(string!=null)
         for (int i=0; i<string.length(); i++)
@@ -52,6 +41,17 @@ public class Console {
 
     public void println(String string){
         this.print(string);
+        this.println();
+    }
+    //Strings end
+
+    //Decimal values
+    public void print(long value){
+        this.printRecursiveInt(this.handleNegativevalue(value));
+    }
+
+    public void println(long value){
+        this.print(value);
         this.println();
     }
 
@@ -64,16 +64,16 @@ public class Console {
         this.println();
     }
 
-    public void print(long value){
-        this.printRecursiveInt(this.handleNegativevalue(value));
+    public void print(short value){
+        this.print((long)value);
     }
 
-    public void println(long value){
+    public void println(short value){
         this.print(value);
         this.println();
     }
 
-    //TODO: Rekursiven Aufruf durch Array ersetzen?
+    //Handling Decimals
     private void printRecursiveInt(long value){
         //Höchste Stelle als erstes ausgeben
         int charOffset = 48;
@@ -91,10 +91,11 @@ public class Console {
         }
         return value;
     }
+    //Decimal values end
 
+    //Hex values
     public void printHex(byte b){
-        int byteCount=1;
-        this.printHexvalue((int)b,byteCount);
+        this.printHexvalue(b,1);
     }
 
     public void printlnHex(byte b){
@@ -103,8 +104,7 @@ public class Console {
     }
 
     public void printHex(short value){
-        int byteCount=2;
-        this.printHexvalue((int)value,byteCount);
+        this.printHexvalue(value,2);
     }
 
     public void printlnHex(short value){
@@ -113,8 +113,7 @@ public class Console {
     }
 
     public void printHex(int value){
-        int byteCount=4;
-        this.printHexvalue(value,byteCount);
+        this.printHexvalue(value,4);
     }
 
     public void printlnHex(int value){
@@ -122,13 +121,8 @@ public class Console {
         this.println();
     }
 
-    //TODO: Überprüfen, da nur 32 Bit..
     public void printHex(long value){
-        int byteCount=8;
-        int lowerInt = (int)value;
-        value = value>>32;
-        int higherInt = (int)value;
-        this.printHexvalue((int)value,byteCount);
+        this.printHexvalue(value, 8);
     }
 
     public void printlnHex(long value){
@@ -136,19 +130,22 @@ public class Console {
         this.println();
     }
 
-    //TODO: Hex überarbeiten, lesbarer machen, ggf eigene Klasse -> HexHandler
-    //Uses printByteAsHex for every Byte from heighest one to lowest one
-    private void printHexvalue(int value, int byteCount){
-        int byteOffset=8;
-        int currentByte;
-        int currentOffset=byteOffset*(byteCount-1);
+    //Handling Hex
+    private void printHexvalue(long value, int byteCount){
+        byte[] b = new byte[byteCount];
+        int bitmask = 0xFF, arrayIndex=byteCount-1, i;
+        //highest Byte at lowest index
+        for(i = 0; i < byteCount; i++){
+            b[arrayIndex]=(byte)(value&bitmask);
+            arrayIndex--;
+            value = value>>8;
+        }
         this.printHexPrefix();
-        while(currentOffset>=0){
-            currentByte=value>>currentOffset;
-            printByteAsHex((byte)currentByte);
-            currentOffset-=byteOffset;
+        for(int j = 0; j<byteCount; j++){
+            printByteAsHex(b[j]);
         }
     }
+
 
     //prints a single byte as Hex
     private void printByteAsHex(byte b){
