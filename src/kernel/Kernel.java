@@ -6,24 +6,19 @@ import output.Console.Console;
 import output.colors.StaticColors;
 
 public class Kernel {
+
+    private static Console console;
+
+    static{
+        console = new Console();
+    }
+
     public static void main() {
         //while(true);
+        initKernel();
+        testFunctions();
 
-        //For static Blocks
-        MAGIC.doStaticInit();
-        //Interrupt setup
-        Interrupts.registerHandlers();
-        Interrupts.initPic();
-        //Activate Interrupts - Dangerous
-        Interrupts.SetInterruptFlag();
-
-        Console console = new Console();
-        console.clearConsole();
-        consoleCheck(console);
-        /*//TODO error
-        console.printlnHex((long)0xFFFFFFFFA123L);
-        //PHASE 4B
-
+        /*
         //TODO: Auslagern
         boolean textinput = true;
         console.println("Texteingabe: 0 zum Beenden druecken");
@@ -57,6 +52,21 @@ public class Kernel {
         } while (i != 0);*/
     }
 
+    private static void initKernel(){
+        //for Static Blocks
+        MAGIC.doStaticInit();
+        Interrupts.initInterrupts();
+        console.clearConsole();
+        console.println("                             Welcome to KasleberkOS                             ");
+    }
+
+    private static void testFunctions(){
+        consoleCheck();
+        checkMultipleObjects();
+    }
+
+
+
     private static void interruptCheck(){
         Console c = new Console();
         c.println("Interrupttests:");
@@ -71,44 +81,45 @@ public class Kernel {
         BIOS.rint(0x10);
     }
 
-    private static void consoleCheck(Console console){
-        //console.setCursor(10,10);
-        console.print('A');
+    private static void consoleCheck(){
+        //inputs to test:
+        console.print("char: ");
+        console.println('c');
+        console.print("string: ");
+        console.println("String");
+        console.print("int: ");
+        console.println(273);
+        console.print("negative int: ");
+        console.println(-273);
+        console.print("int: ");
+        console.println(1234567890);
+        console.print("null: ");
+        console.println(0);
+        console.print("short: ");
+        console.println((short)12345);
+        console.print("long: ");
+        console.println((long)1234567890987654321L);
+        console.print("Hex byte: ");
+        console.printlnHex((byte)55);
+        console.print("Hex byte2: ");
+        console.printlnHex((byte)0x55);
+        console.print("Hex short: ");
+        console.printlnHex((short)0x12AF);
+        console.print("Hex int: ");
+        console.printlnHex(0x1234ABCD);
+        console.print("Hex long: ");
+        console.printlnHex((long)0x123456789ABCDEF0L);
+        console.print("Hex long2: ");
+        console.printlnHex((long)-1L);
+        console.setCursor(1,0);
         console.println();
-        console.setColor(StaticColors.font_cyan,StaticColors.defaultBack);
-        console.print("AAAAAAAAAAAAAAAAAAAAAA");
-        Console console1 = new Console();
-        console1.println();
-        console1.setColor(StaticColors.font_green, StaticColors.defaultBack);
-        console1.print("Anderes Objekt, gleicher Videospeicher");
-        console1.println();
-        console.print("Farbe von erster Konsole immernoch auf Cyan?");
-        console1.println();
-        console.setColor(StaticColors.font_lightmagenta,StaticColors.defaultBack);
-        int z = 0;
-        int x = 273;
-        long y = 1234567890123456L;
-        int minusx = -273;
-        byte hex1= (byte) 0xA1;
-        byte hex2= -2;
-        short hex3= (short) 0xF1B3;
-        int hex4= 0x1A2B3C4D;
-        long hex5= 0x1A2B3C4D1AAABCFDL;
-        long hex6=-1L;
-        console1.println(x);
-        console1.println(y);
-        console.println(z);
-        console.println(minusx);
-        console.printlnHex(hex1);
-        console.printlnHex(hex2);
-        console.printlnHex(hex3);
-        console.printlnHex(hex4);
-        console.printlnHex(hex5);
-        console1.printlnHex(hex6);
-        /*for(int i=0;i<11;i++){
-            console.println();
-        }*/
-        //Overflow Check
-        //console.print("Das hier sollte in der ersten Zeile stehen, sofern nichts hinzugefuegt wurde --");
+    }
+
+    private static void checkMultipleObjects(){
+        console.println("Standardconsole");
+        Console c1 = new Console();
+        c1.setColor(StaticColors.font_cyan, StaticColors.back_black);
+        c1.print("zweites object - ");
+        console.print("erstes object");
     }
 }
