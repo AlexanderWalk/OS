@@ -1,19 +1,24 @@
 package output.VideoMem;
 
 public class VideoMemory {
-    private static final int startAddress =0xB8000;
+    //rel Address
     private static final int rowCount = 25;
-    private static final int firstRow = 0;
-    private static final int lastRow = rowCount-1;
     private static final int entriesPerRow =80;
-    private static final int firstEntry = 0;
-    private static final int lastEntry = entriesPerRow -1;
     private static final int bytesPerEntry = 2;
-    private static final int memoryByteCount = entriesPerRow * bytesPerEntry * rowCount;
-    private static final int endAddress = startAddress + memoryByteCount;
+    private static final int firstRow = 0;
+    private static final int firstEntry = 0;
+    private static final int lastRow = rowCount-1;
+    private static final int lastEntry = entriesPerRow -1;
     private static int currRow = 0;
     private static int currEntryPosition = 0;
-    private static final int clearColor = 0x00;
+
+    //phys Address
+    private static final int startAddress =0xB8000;
+    private static final int memoryByteCount = entriesPerRow * bytesPerEntry * rowCount;
+    private static final int endAddress = startAddress + memoryByteCount;
+
+    //const for clearing
+    private static final int clearColor = 0x07;
     private static final char space = ' ';
 
     public static void writeChar(char c, int color){
@@ -26,25 +31,33 @@ public class VideoMemory {
     }
 
     public static void clearMemory(){
-        setCursor(firstEntry,firstRow);
+        resetCurrPosition();
         for(int i = firstRow; i<rowCount;i++){
             clearRow(i);
         }
     }
 
     public static void setCursor(int positionInRow, int row) {
-        int relposition = row * entriesPerRow + positionInRow;
+        updateCursor(getCursorPos(positionInRow,row));
+    }
+
+    public static void updateCursor(){
+        updateCursor(getCursorPos(currEntryPosition,currRow));
+    }
+
+    private static int getCursorPos(int entryPos, int row){
+        return row*entriesPerRow+entryPos;
+    }
+
+    private static void updateCursor(int cursorPos){
         MAGIC.wIOs8(0x3D4, (byte)0x0F);
-        MAGIC.wIOs8(0x3D5, (byte)(relposition&0xFF));
+        MAGIC.wIOs8(0x3D5, (byte)(cursorPos&0xFF));
         MAGIC.wIOs8(0x3D4, (byte)0x0E);
-        MAGIC.wIOs8(0x3D5, (byte)((relposition>>8)&0xFF));
+        MAGIC.wIOs8(0x3D5, (byte)((cursorPos>>8)&0xFF));
     }
 
     //Returns real Address from relative X and Y
     private static int getVidMemPosition(int row, int entryPosition){
-        if(entryPosition<firstEntry||entryPosition>entriesPerRow||row<firstRow||row>rowCount){
-            //TODO
-        }
         return startAddress + (row * entriesPerRow + entryPosition)*bytesPerEntry;
     }
 
@@ -62,6 +75,12 @@ public class VideoMemory {
         }
     }
 
+    private static void resetCurrPosition(){
+        currRow=firstRow;
+        currEntryPosition=firstEntry;
+        updateCursor();
+    }
+
     private static void nextRow(){
         currEntryPosition = firstEntry;
         if(currRow == lastRow)
@@ -76,6 +95,4 @@ public class VideoMemory {
             setCharAtPosition(space, clearColor, row, i);
         }
     }
-
-
 }

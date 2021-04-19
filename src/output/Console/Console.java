@@ -23,54 +23,69 @@ public class Console {
     }
 
     //Actual printing
-    public void print(char c) {
+    private void printToVidmem(char c) {
         VideoMemory.writeChar(c,this.currentColor.getColor());
     }
 
+    public void print(char c){
+        this.printToVidmem(c);
+        VideoMemory.updateCursor();
+    }
+
+
     public void println(char c){
-        this.print(c);
+        this.printToVidmem(c);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     //Strings
     public void print(String string) {
         if(string!=null)
         for (int i=0; i<string.length(); i++)
-            this.print(string.charAt(i));
+            this.printToVidmem(string.charAt(i));
+        VideoMemory.updateCursor();
     }
 
     public void println(String string){
         this.print(string);
         this.println();
+        VideoMemory.updateCursor();
     }
     //Strings end
 
     //Decimal values
     public void print(long value){
         this.printRecursiveInt(this.handleNegativevalue(value));
+        VideoMemory.updateCursor();
     }
 
     public void println(long value){
         this.print(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     public void print(int value){
         this.print((long)value);
+        VideoMemory.updateCursor();
     }
 
     public void println(int value){
         this.print(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     public void print(short value){
         this.print((long)value);
+        VideoMemory.updateCursor();
     }
 
     public void println(short value){
         this.print(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     //Handling Decimals
@@ -81,12 +96,12 @@ public class Console {
         value/=10;
         if(value>0)
             this.printRecursiveInt(value);
-        this.print(currChar);
+        this.printToVidmem(currChar);
     }
 
     private long handleNegativevalue(long value){
         if(value<0){
-            this.print('-');
+            this.printToVidmem('-');
             value*=-1;
         }
         return value;
@@ -96,38 +111,46 @@ public class Console {
     //Hex values
     public void printHex(byte b){
         this.printHexvalue(b,1);
+        VideoMemory.updateCursor();
     }
 
     public void printlnHex(byte b){
         this.printHex(b);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     public void printHex(short value){
         this.printHexvalue(value,2);
+        VideoMemory.updateCursor();
     }
 
     public void printlnHex(short value){
         this.printHex(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     public void printHex(int value){
         this.printHexvalue(value,4);
+        VideoMemory.updateCursor();
     }
 
     public void printlnHex(int value){
         this.printHex(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     public void printHex(long value){
         this.printHexvalue(value, 8);
+        VideoMemory.updateCursor();
     }
 
     public void printlnHex(long value){
         this.printHex(value);
         this.println();
+        VideoMemory.updateCursor();
     }
 
     //Handling Hex
@@ -154,8 +177,8 @@ public class Console {
         int firstHex = b & hexMask;
         b= (byte) (b>>(byte)HexOffset);
         int secondHex = b & hexMask;
-        this.print(getHexChar(secondHex));
-        this.print(getHexChar(firstHex));
+        this.printToVidmem(getHexChar(secondHex));
+        this.printToVidmem(getHexChar(firstHex));
     }
 
     private void printHexPrefix(){
