@@ -12,7 +12,15 @@ public class Interrupts {
     private static final int bytesPerEntry = 8;
     private static final int entryCount = 48;
 
-    public static void registerHandlers() {
+    public static void initInterrupts(){
+        //Interrupt setup
+        Interrupts.registerHandlers();
+        Interrupts.initPic();
+        //Activate Interrupts - Dangerous
+        Interrupts.SetInterruptFlag();
+    }
+
+    private static void registerHandlers() {
         int i=0;
         int genericHandlerOffset = MAGIC.mthdOff("Interrupts","genericHandler");
         int breakpointOffset = MAGIC.mthdOff("Interrupts","bpHandler");
@@ -77,7 +85,7 @@ public class Interrupts {
     // Segmentselector: "Da muss ne 8 rein"
     //Offset 16-31 -> klar
     // Flags etc laut Vorlesung: 1000111000000000 -> = 0x8E00
-    public static void createIDTEntry(int  entryNum, int handler){
+    private static void createIDTEntry(int  entryNum, int handler){
         int entryAddr = IDTStartAdress + entryNum*8;
         MAGIC.wMem32(entryAddr, handler&0x0000FFFF|(8<<16));
         MAGIC.wMem32(entryAddr+4, 0x00008E00|handler&0xFFFF0000);
