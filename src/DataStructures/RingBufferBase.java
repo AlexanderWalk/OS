@@ -21,7 +21,7 @@ public abstract class RingBufferBase {
     }
 
     protected void increaseWritePointer(){
-        if(this.writePtr<this.bufferSize)
+        if(this.writePtr<this.bufferSize-1)
             this.writePtr++;
         else
             this.writePtr=0;
@@ -29,7 +29,7 @@ public abstract class RingBufferBase {
 
     protected void increaseReadPointer(){
         if(readPtr!=writePtr){
-            if(this.readPtr<this.bufferSize)
+            if(this.readPtr<this.bufferSize-1)
                 this.readPtr++;
             else
                 this.readPtr=0;

@@ -34,8 +34,8 @@ public class Kernel {
         //consoleCheck();
         //checkMultipleObjects();
         //interruptCheck();
-        //getMemoryMap();
-        //enterTextinputMode();
+        getMemoryMap();
+        enterTextinputMode();
     }
 
     private static void getMemoryMap(){
@@ -68,7 +68,8 @@ public class Kernel {
                 keyboardEvent = Keyboard.getKeyboardEvent();
                 if(keyboardEvent.keyCode == Key.ESCAPE)
                     textinput=false;
-                console.print((char)keyboardEvent.keyCode);
+                if(keyboardEvent.keyCode<=127)
+                    console.print((char)keyboardEvent.keyCode);
             }
         }
     }

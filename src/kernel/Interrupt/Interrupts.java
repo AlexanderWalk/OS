@@ -5,7 +5,6 @@ import Devices.Timer;
 import output.Console.DebugConsole;
 
 public class Interrupts {
-    private static final int MASTER = 0x20, SLAVE = 0xA0;
     private static boolean IsInterruptFlagActive = false;
     //First free Address 0x07E00
     private static final int IDTStartAdress = 0x8000;
@@ -21,44 +20,81 @@ public class Interrupts {
     }
 
     private static void registerHandlers() {
-        int i=0;
-        int genericHandlerOffset = MAGIC.mthdOff("Interrupts","genericHandler");
-        int breakpointOffset = MAGIC.mthdOff("Interrupts","bpHandler");
-        int genericHandlerwParamOffset = MAGIC.mthdOff("Interrupts","genericHandlerWithParameter");
-        int hardwareInterruptOffset = MAGIC.mthdOff("Interrupts","genericHardwareInterruptHandler");
-        int timerInterruptOffset = MAGIC.mthdOff("Interrupts","timerInterruptHandler");
-        int keyboardInterruptOffset = MAGIC.mthdOff("Interrupts","keyboardInterruptHandler");
-        int classRef = MAGIC.cast2Ref(MAGIC.clssDesc("Interrupts"));
         setIDTRegister();
-        while(i<=0x02){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-        }
-        createIDTEntry(i++,MAGIC.rMem32(classRef+breakpointOffset)+MAGIC.getCodeOff());
-        while(i<=0x07){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-        }
-        //Double Fault
-        createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
-        //reserved
-        while(i<=0x0C){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-        }
-        //General protection Error and Page fault
-        while(i<0x0E){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerwParamOffset)+MAGIC.getCodeOff());
-        }
-        //0x0F bis 0x1F reserved
-        while(i<=0x1F){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+genericHandlerOffset)+MAGIC.getCodeOff());
-        }
-        //TODO:IRQ0-15
-        //Timer
-        createIDTEntry(i++,MAGIC.rMem32(classRef+timerInterruptOffset)+MAGIC.getCodeOff());
-        //Keyboard
-        createIDTEntry(i++,MAGIC.rMem32(classRef+keyboardInterruptOffset)+MAGIC.getCodeOff());
-        //Other devices
+        int classRef = MAGIC.cast2Ref(MAGIC.clssDesc("InterruptHandler"));
+        createIDTEntry(0x00,MAGIC.rMem32(classRef+InterruptHandler.divideByZeroOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x01,MAGIC.rMem32(classRef+InterruptHandler.debugExceptionOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x02,MAGIC.rMem32(classRef+InterruptHandler.NMIOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x03,MAGIC.rMem32(classRef+InterruptHandler.breakpointOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x04,MAGIC.rMem32(classRef+InterruptHandler.overflowOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x05,MAGIC.rMem32(classRef+InterruptHandler.indexOutOfRangeOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x06,MAGIC.rMem32(classRef+InterruptHandler.invalidOpcodeOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x07,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x08,MAGIC.rMem32(classRef+InterruptHandler.doubleFaultOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x09,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0A,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0B,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0C,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0D,MAGIC.rMem32(classRef+InterruptHandler.generalProtectionErrorOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0E,MAGIC.rMem32(classRef+InterruptHandler.pageFaultOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x0F,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x10,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x11,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x12,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x13,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x14,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x15,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x16,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x17,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x18,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x19,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1A,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1B,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1C,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1D,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1E,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x1F,MAGIC.rMem32(classRef+InterruptHandler.reservedOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x20,MAGIC.rMem32(classRef+InterruptHandler.timerInterruptOffset())
+                +MAGIC.getCodeOff());
+        createIDTEntry(0x21,MAGIC.rMem32(classRef+InterruptHandler.keyboardInterruptOffset())
+                +MAGIC.getCodeOff());
+        int i=0x22;
+        //Not yet used Devices
         while(i<=0x2F){
-            createIDTEntry(i++,MAGIC.rMem32(classRef+hardwareInterruptOffset)+MAGIC.getCodeOff());
+            createIDTEntry(i++,MAGIC.rMem32(classRef+InterruptHandler.genericHardwareInterruptOffset())
+                    +MAGIC.getCodeOff());
         }
     }
 
@@ -107,57 +143,10 @@ public class Interrupts {
         }
     }
 
-    //TODO: Handler aufsplitten
-
-    //Interrupt Placeholder #1
-    @SJC.Interrupt
-    private static void genericHandler(){
-        DebugConsole.directDebugPrint("handled.");
-    }
-
-    @SJC.Interrupt
-    private static void bpHandler(){
-        DebugConsole.directDebugPrint("Breakpoint");
-        while(true);
-    }
-
-    //Interrupt Placeholder #2
-    @SJC.Interrupt
-    private static void genericHandlerWithParameter(int param){
-        DebugConsole.directDebugPrint("handled with parameter");
-    }
-
-    //Interrupt Placeholder #3
-    @SJC.Interrupt
-    public static void genericHardwareInterruptHandler(){
-        DebugConsole.directDebugPrint("Device handled");
-        hardwareEOI(SLAVE);
-        hardwareEOI(MASTER);
-    }
-
-    @SJC.Interrupt
-    public static void timerInterruptHandler(){
-        //Console.directDebugPrint("timer");
-        Timer.increaseTimer();
-        hardwareEOI(MASTER);
-    }
-
-    @SJC.Interrupt
-    public static void keyboardInterruptHandler(){
-        Keyboard.storeByte();
-        //Console.directDebugPrint("Keyboardbyte stored");
-        hardwareEOI(MASTER);
-    }
-
-    //End of Interrupt for every Hardwareinterrupt
-    private static void hardwareEOI(int port){
-        MAGIC.wIOs8(port,(byte)0x20);
-    }
-
     //Initialize PIC for Hardwareinterrupts
     public static void initPic() {
-        programmChip(MASTER, 0x20, 0x04); //init offset and slave config of master
-        programmChip(SLAVE, 0x28, 0x02); //init offset and slave config of slave
+        programmChip(InterruptHandler.hardwareInterruptMaster, 0x20, 0x04); //init offset and slave config of master
+        programmChip(InterruptHandler.hardwareInterruptSlave, 0x28, 0x02); //init offset and slave config of slave
     }
 
     private static void programmChip(int port, int offset, int icw3) {
