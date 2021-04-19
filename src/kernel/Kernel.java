@@ -1,5 +1,8 @@
 package kernel;
 
+import Devices.Keyboard.Key;
+import Devices.Keyboard.Keyboard;
+import Devices.Keyboard.KeyboardEvent;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
 import output.Console.Console;
@@ -17,39 +20,6 @@ public class Kernel {
         //while(true);
         initKernel();
         testFunctions();
-
-        /*
-        //TODO: Auslagern
-        boolean textinput = true;
-        console.println("Texteingabe: 0 zum Beenden druecken");
-        while(textinput){
-            Keyboard.processInputBuffer();
-            KeyboardEvent keyboardEvent;
-            if(Keyboard.eventAvailable()){
-                keyboardEvent = Keyboard.getKeyboardEvent();
-                if((char)keyboardEvent.keyCode == '0')
-                    textinput=false;
-                console.print((char)keyboardEvent.keyCode);
-            }
-        }
-
-        //PHASE 4C
-        int i = 0;
-        do {
-            MemoryMapEntry map = BIOS.getMemoryMap(i);
-            //get new continuationIndex from EBX
-            i = BIOS.regs.EBX;
-            //if type is 1 - memory not free
-            console.printHex(map.baseAddress);
-            console.print(" ");
-            console.printHex(map.length);
-            console.print(" ");
-            if(map.type == 1){
-                console.println("free");
-            } else{
-                console.println("reserved");
-            }
-        } while (i != 0);*/
     }
 
     private static void initKernel(){
@@ -61,24 +31,60 @@ public class Kernel {
     }
 
     private static void testFunctions(){
-        consoleCheck();
-        checkMultipleObjects();
+        //consoleCheck();
+        //checkMultipleObjects();
+        //interruptCheck();
+        //getMemoryMap();
+        //enterTextinputMode();
     }
 
+    private static void getMemoryMap(){
+        int continuation = 0;
+        do {
+            MemoryMapEntry map = BIOS.getMemoryMap(continuation);
+            //get new continuationIndex from EBX
+            continuation = BIOS.regs.EBX;
+            //Printing Adress and length
+            console.printHex(map.baseAddress);
+            console.print(" ");
+            console.printHex(map.length);
+            console.print(" ");
+            //type determines if Memory is free or already reserved
+            if(map.type == 1){
+                console.println("free");
+            } else{
+                console.println("reserved");
+            }
+        } while (continuation != 0);
+    }
 
+    private static void enterTextinputMode(){
+        boolean textinput = true;
+        console.println("Texteingabe: ESC zum Beenden druecken");
+        while(textinput){
+            Keyboard.processInputBuffer();
+            KeyboardEvent keyboardEvent;
+            if(Keyboard.eventAvailable()){
+                keyboardEvent = Keyboard.getKeyboardEvent();
+                if(keyboardEvent.keyCode == Key.ESCAPE)
+                    textinput=false;
+                console.print((char)keyboardEvent.keyCode);
+            }
+        }
+    }
 
     private static void interruptCheck(){
-        Console c = new Console();
-        c.println("Interrupttests:");
-        MAGIC.inline(0xCC);
-        BIOS.regs.EAX=0x0013;
-        BIOS.rint(0x10);
+        console.println("Interrupttests:");
+        //Enter Graphicmode, draw and exit after 5 Seconds
+        BIOS.enterGraphicMode();
         for(int i=0;i<32000;i++){
             MAGIC.wMem8(0xA0000+i,(byte)0x4B);
         }
         Timer.sleep(5);
-        BIOS.regs.EAX=0x0003;
-        BIOS.rint(0x10);
+        BIOS.exitGraphicMode();
+        console.clearConsole();
+        //Breakpoint
+        MAGIC.inline(0xCC);
     }
 
     private static void consoleCheck(){

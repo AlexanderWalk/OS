@@ -190,6 +190,16 @@ public class BIOS {
     MAGIC.inline(0x9D); //popf
   }
 
+  public static void enterGraphicMode(){
+    regs.EAX=0x0013;
+    rint(0x10);
+  }
+
+  public static void exitGraphicMode(){
+    regs.EAX=0x0003;
+    rint(0x10);
+  }
+
   public static MemoryMapEntry getMemoryMap(int i) {
     //BIOSBuffer buffer = (BIOSBuffer) MAGIC.cast2Struct(memReadBuffer);
     regs.EAX = 0x0000E820;

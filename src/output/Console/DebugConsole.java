@@ -16,6 +16,6 @@ public class DebugConsole {
     }
 
     public static void directDebugPrint(char c) {
-        VideoMemory.writeChar(c, StaticColors.back_black|StaticColors.font_grey);
+        VideoMemory.writeChar(c, StaticColors.back_black|StaticColors.font_lightred);
     }
 }
