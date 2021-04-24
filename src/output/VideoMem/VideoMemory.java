@@ -1,5 +1,7 @@
 package output.VideoMem;
 
+import output.colors.StaticColors;
+
 public class VideoMemory {
     //rel Address
     private static final int rowCount = 25;
@@ -18,22 +20,21 @@ public class VideoMemory {
     private static final int endAddress = startAddress + memoryByteCount;
 
     //const for clearing
-    private static final int clearColor = 0x07;
     private static final char space = ' ';
 
     public static void writeChar(char c, int color){
         setCharAtPosition(c,color,currRow,currEntryPosition);
-        increaseCurrPosition();
+        increaseCurrPosition(color);
     }
 
-    public static void newLine(){
-        nextRow();
+    public static void newLine(int color){
+        nextRow(color);
     }
 
-    public static void clearMemory(){
+    public static void clearMemory(int color){
         resetCurrPosition();
         for(int i = firstRow; i<rowCount;i++){
-            clearRow(i);
+            clearRow(i,color);
         }
     }
 
@@ -67,9 +68,9 @@ public class VideoMemory {
         MAGIC.wMem8(pos+1, (byte)color);
     }
 
-    private static void increaseCurrPosition() {
+    private static void increaseCurrPosition(int color) {
         if (currEntryPosition == lastEntry) {
-            nextRow();
+            nextRow(color);
         } else {
             currEntryPosition++;
         }
@@ -81,18 +82,18 @@ public class VideoMemory {
         updateCursor();
     }
 
-    private static void nextRow(){
+    private static void nextRow(int color){
         currEntryPosition = firstEntry;
         if(currRow == lastRow)
             currRow=firstRow;
         else
             currRow++;
-        clearRow(currRow);
+        clearRow(currRow, color);
     }
 
-    private static void clearRow(int row){
+    private static void clearRow(int row, int color){
         for(int i = firstEntry; i<entriesPerRow;i++){
-            setCharAtPosition(space, clearColor, row, i);
+            setCharAtPosition(space, color, row, i);
         }
     }
 }

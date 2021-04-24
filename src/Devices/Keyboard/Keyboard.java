@@ -1,6 +1,8 @@
 package Devices.Keyboard;
 
 import DataStructures.ByteRingBuffer;
+import output.Console.Console;
+import output.Console.DebugConsole;
 
 //TODO: Dynamic Device
 public class Keyboard {
@@ -30,6 +32,8 @@ public class Keyboard {
     //store Byte from Keyboard Interrupt
     public static void storeByte(){
         byte b = MAGIC.rIOs8(0x60);
+        //Console c = new Console();
+        //c.printHex(b);
         //ignore if code >>
         if((b&0xFF)>=0xE2)
             return;
@@ -62,7 +66,9 @@ public class Keyboard {
             switch (key) {
                 //modifier
                 case Key.LEFT_SHIFT:
+                    //DebugConsole.directDebugPrint("ls ");
                 case Key.RIGHT_SHIFT:
+                    //DebugConsole.directDebugPrint("s ");
                     if (breakKey) {
                         shift = false;
                         if (singleShift) {

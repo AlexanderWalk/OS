@@ -10,7 +10,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void divideByZero(){
-        DebugConsole.directDebugPrint("DivideByZero");
+        DebugConsole.debugPrint("DivideByZero");
         while(true);
     }
     static int divideByZeroOffset() {
@@ -19,7 +19,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void debugException(){
-        DebugConsole.directDebugPrint("debugException");
+        DebugConsole.debugPrint("debugException");
         while(true);
     }
     static int debugExceptionOffset() {
@@ -28,7 +28,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void NMI(){
-        DebugConsole.directDebugPrint("NMI");
+        DebugConsole.debugPrint("NMI");
         while(true);
     }
     static int NMIOffset() {
@@ -37,7 +37,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void breakpoint(){
-        DebugConsole.directDebugPrint("breakpoint");
+        DebugConsole.debugPrint("breakpoint");
         while(true);
     }
     static int breakpointOffset() {
@@ -46,7 +46,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void overflow(){
-        DebugConsole.directDebugPrint("overflow");
+        DebugConsole.debugPrint("overflow");
         while(true);
     }
     static int overflowOffset() {
@@ -55,7 +55,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void indexOutOfRange(){
-        DebugConsole.directDebugPrint("indexOutOfRange");
+        DebugConsole.debugPrint("indexOutOfRange");
         while(true);
     }
     static int indexOutOfRangeOffset() {
@@ -64,7 +64,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void invalidOpcode(){
-        DebugConsole.directDebugPrint("invalidOpcode");
+        DebugConsole.debugPrint("invalidOpcode");
         while(true);
     }
     static int invalidOpcodeOffset() {
@@ -74,7 +74,7 @@ public class InterruptHandler {
     //reserved: 0x07, 0x09-0x0C, 0x0F-0x1F
     @SJC.Interrupt
     private static void reserved(){
-        DebugConsole.directDebugPrint("reserved");
+        DebugConsole.debugPrint("reserved");
         while(true);
     }
     static int reservedOffset() {
@@ -83,7 +83,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void doubleFault(){
-        DebugConsole.directDebugPrint("doubleFault");
+        DebugConsole.debugPrint("doubleFault");
         while(true);
     }
     static int doubleFaultOffset() {
@@ -92,7 +92,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void generalProtectionError(){
-        DebugConsole.directDebugPrint("generalProtectionError");
+        DebugConsole.debugPrint("generalProtectionError");
         while(true);
     }
     static int generalProtectionErrorOffset() {
@@ -101,7 +101,7 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void pageFault(){
-        DebugConsole.directDebugPrint("pageFault");
+        DebugConsole.debugPrint("pageFault");
         while(true);
     }
     static int pageFaultOffset() {
@@ -111,7 +111,7 @@ public class InterruptHandler {
     //Unknown Device
     @SJC.Interrupt
     public static void genericHardwareInterrupt(){
-        DebugConsole.directDebugPrint("unknown Device");
+        DebugConsole.debugPrint("unknown Device");
         while(true);
         //hardwareEOI(hardwareInterruptSlave);
         //hardwareEOI(hardwareInterruptMaster);
@@ -132,6 +132,7 @@ public class InterruptHandler {
     @SJC.Interrupt
     public static void keyboardInterrupt(){
         Keyboard.storeByte();
+        //DebugConsole.directDebugPrint('c');
         hardwareEOI(hardwareInterruptMaster);
     }
     static int keyboardInterruptOffset() {

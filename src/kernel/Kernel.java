@@ -19,6 +19,7 @@ public class Kernel {
     public static void main() {
         //while(true);
         initKernel();
+        //MAGIC.inline(0xCC);
         testFunctions();
     }
 
@@ -31,11 +32,11 @@ public class Kernel {
     }
 
     private static void testFunctions(){
-        //consoleCheck();
-        //checkMultipleObjects();
+        consoleCheck();
+        checkMultipleObjects();
         //interruptCheck();
-        getMemoryMap();
-        enterTextinputMode();
+        //getMemoryMap();
+        //enterTextinputMode();
     }
 
     private static void getMemoryMap(){
