@@ -6,6 +6,7 @@ import Devices.Keyboard.KeyboardEvent;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
 import output.Console.Console;
+import output.Console.DebugConsole;
 import output.colors.StaticColors;
 
 public class Kernel {
@@ -19,7 +20,6 @@ public class Kernel {
     public static void main() {
         //while(true);
         initKernel();
-        //MAGIC.inline(0xCC);
         testFunctions();
     }
 
@@ -27,13 +27,18 @@ public class Kernel {
         //for Static Blocks
         MAGIC.doStaticInit();
         Interrupts.initInterrupts();
+
+        //Breakpoint - Kerneladresse
+        //MAGIC.inline(0xCC);
+
         console.clearConsole();
         console.println("                             Welcome to KasleberkOS                             ");
     }
 
     private static void testFunctions(){
         consoleCheck();
-        checkMultipleObjects();
+        //debugConsoleCheck();
+        //checkMultipleObjects();
         //interruptCheck();
         //getMemoryMap();
         //enterTextinputMode();
@@ -121,6 +126,18 @@ public class Kernel {
         console.printlnHex((long)-1L);
         console.setCursor(1,0);
         console.println();
+    }
+
+    private static void debugConsoleCheck(){
+        DebugConsole.clearConsoleDebug();
+        DebugConsole.debugPrint("char: ");
+        DebugConsole.debugPrintln('c');
+        DebugConsole.debugPrint("String: ");
+        DebugConsole.debugPrintln("string");
+        DebugConsole.debugPrint("Hex: ");
+        DebugConsole.debugPrintlnHex(0x1234ABCD);
+        DebugConsole.debugPrint("Hex2: ");
+        DebugConsole.debugPrintlnHex(0xFDEC0123);
     }
 
     private static void checkMultipleObjects(){

@@ -37,7 +37,10 @@ public class InterruptHandler {
 
     @SJC.Interrupt
     private static void breakpoint(){
-        DebugConsole.debugPrint("breakpoint");
+        int ebp=0;
+        MAGIC.inline(0x89, 0x6D);
+        MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
+        Bluescreen.createBluescreen("Breakpoint",ebp);
         while(true);
     }
     static int breakpointOffset() {
