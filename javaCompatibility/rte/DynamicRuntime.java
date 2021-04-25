@@ -1,6 +1,7 @@
 package rte;
 
 import kernel.BIOS;
+import output.Console.DebugConsole;
 
 public class DynamicRuntime {
   private static SEmptyObject firstEmptyObj;
@@ -30,9 +31,9 @@ public class DynamicRuntime {
 
           Object emptyObject = MAGIC.cast2Obj(newObjectPointer);
           //pointer + 16 Bytes - for 2 Ints and 3 Refs - Type, next, nextEmpty
-          newObjectPointer+=20;
+          newObjectPointer+=12;
 
-          MAGIC.assign(emptyObject._r_relocEntries,2);
+          MAGIC.assign(emptyObject._r_relocEntries,3);
           MAGIC.assign(obj._r_next,(Object) emptyObject);
           MAGIC.assign(emptyObject._r_type,MAGIC.clssDesc("SEmptyObject"));
           MAGIC.assign(emptyObject._r_scalarSize,maxAddr-newObjectPointer+1);
@@ -53,6 +54,32 @@ public class DynamicRuntime {
   }
   
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
+
+
+    SEmptyObject emptyObject = firstEmptyObj;
+    scalarSize = ((scalarSize + 3)&~3);
+    int newObjectlenght = scalarSize + relocEntries*4 + 16;
+    while(true){
+      if ((emptyObject._r_scalarSize - 8) > newObjectlenght){
+        break;
+      }
+      if(emptyObject.nextEmptyObject==null){
+        MAGIC.inline(0xCC);
+      }
+      emptyObject = emptyObject.nextEmptyObject;
+    }
+    //get new Address and set new Scalarsize of EmptyObject
+    int newObjectAdress = MAGIC.cast2Ref(emptyObject) + emptyObject._r_scalarSize - scalarSize;
+    //DebugConsole.debugPrintln(emptyObject._r_scalarSize);
+    //DebugConsole.debugPrint(scalarSize);
+    MAGIC.assign(emptyObject._r_scalarSize, emptyObject._r_scalarSize-newObjectlenght);
+    Object newObject = MAGIC.cast2Obj(newObjectAdress);
+    MAGIC.assign(newObject._r_next, emptyObject._r_next);
+    MAGIC.assign(emptyObject._r_next, newObject);
+    MAGIC.assign(newObject._r_relocEntries, relocEntries);
+    MAGIC.assign(newObject._r_scalarSize, scalarSize);
+    MAGIC.assign(newObject._r_type, type);
+    /*
     //Pointer auf erstes Objekt im Speicher
     int firstObjectPtr = MAGIC.imageBase+16;
     Object object = MAGIC.cast2Obj(firstObjectPtr);
@@ -76,7 +103,7 @@ public class DynamicRuntime {
     MAGIC.assign(object._r_next, newObject);
     MAGIC.assign(newObject._r_relocEntries, relocEntries);
     MAGIC.assign(newObject._r_scalarSize, scalarSize);
-    MAGIC.assign(newObject._r_type, type);
+    MAGIC.assign(newObject._r_type, type);*/
     return newObject;
   }
   

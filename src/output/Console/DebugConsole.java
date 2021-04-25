@@ -41,6 +41,28 @@ public class DebugConsole {
         debugPrintln();
     }
 
+    public static void debugPrint(int value){
+        printRecursiveInt(value);
+        VideoMemory.updateCursor();
+    }
+
+    public static void debugPrintln(int value){
+        debugPrint(value);
+        debugPrintln();
+    }
+
+    //Handling Decimals
+    private static void printRecursiveInt(long value){
+        //Höchste Stelle als erstes ausgeben
+        int charOffset = 48;
+        char currChar = (char)(value%10+charOffset);
+        value/=10;
+        if(value>0)
+            printRecursiveInt(value);
+        debugPrint(currChar);
+    }
+
+
     @SJC.Inline
     public static void debugPrintHex(int value){
         printHexvalue(value,4);
