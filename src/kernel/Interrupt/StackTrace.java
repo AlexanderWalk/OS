@@ -21,9 +21,6 @@ public class StackTrace {
             EBP= MAGIC.rMem32(EBP);
             //old eip in normal Method is 1 address away -> 1*4 Bytes
             EIP= MAGIC.rMem32(EBP+4);
-
-
-            //EBP>0 Verhindert Endlosschleife
         } while(EBP<=stackStart && EBP>0);
     }
 }

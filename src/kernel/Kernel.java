@@ -3,6 +3,9 @@ package kernel;
 import Devices.Keyboard.Key;
 import Devices.Keyboard.Keyboard;
 import Devices.Keyboard.KeyboardEvent;
+import Devices.PCI.BaseClassCode;
+import Devices.PCI.PCI;
+import Devices.PCI.PCIDevice;
 import Devices.Timer;
 import kernel.Interrupt.Interrupts;
 import output.Console.Console;
@@ -27,21 +30,41 @@ public class Kernel {
         //for Static Blocks
         MAGIC.doStaticInit();
         Interrupts.initInterrupts();
-
-        //Breakpoint - Kerneladresse
-        //MAGIC.inline(0xCC);
-
         console.clearConsole();
         console.println("                             Welcome to KasleberkOS                             ");
     }
 
     private static void testFunctions(){
-        consoleCheck();
+        //consoleCheck();
         //debugConsoleCheck();
         //checkMultipleObjects();
         //interruptCheck();
         //getMemoryMap();
         //enterTextinputMode();
+        getPCIDevices();
+    }
+
+    private static void getPCIDevices(){
+        PCIDevice[] devices = PCI.getDevices();
+        console.println("PCI Devices");
+        for(int i = 0; i<devices.length; i++){
+            console.print("Device #");
+            console.println(i);
+            console.print(" Bus: ");
+            console.printHex(devices[i].bus);
+            console.print(" | Device: ");
+            console.printHex(devices[i].device);
+            console.print(" | Function: ");
+            console.printlnHex(devices[i].function);
+            console.print(" Baseclasscode: ");
+            console.print(BaseClassCode.codeToString(devices[i].baseclasscode));
+            console.print(" | Subclasscode: ");
+            console.printHex(devices[i].subclasscode);
+            console.print(" | VendorID: ");
+            console.printHex(devices[i].vendorID);
+            console.print(" | DeviceID ");
+            console.printlnHex(devices[i].deviceID);
+        }
     }
 
     private static void getMemoryMap(){

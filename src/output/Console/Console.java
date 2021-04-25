@@ -24,9 +24,6 @@ public class Console {
 
     //Actual printing
     private void printToVidmem(char c) {
-
-        //Breakpoint Test
-        MAGIC.inline(0xCC);
         VideoMemory.writeChar(c,this.currentColor.getColor());
     }
 

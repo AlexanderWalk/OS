@@ -206,6 +206,7 @@ public class BIOS {
     regs.EDX = 0x534D4150;
     regs.EBX = i;
     regs.ECX = 20;
+    //TODO
     //Realmode - 20 Bit Adresse, 16 Bit Offset
     //in ESI und EDI
     regs.EDI = memBuffAddress;
