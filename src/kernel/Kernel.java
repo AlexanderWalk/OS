@@ -11,6 +11,7 @@ import kernel.Interrupt.Interrupts;
 import output.Console.Console;
 import output.Console.DebugConsole;
 import output.colors.StaticColors;
+import rte.DynamicRuntime;
 
 public class Kernel {
 
@@ -27,6 +28,7 @@ public class Kernel {
     }
 
     private static void initKernel(){
+        DynamicRuntime.initEmptyObjects();
         //for Static Blocks
         MAGIC.doStaticInit();
         Interrupts.initInterrupts();
@@ -40,8 +42,8 @@ public class Kernel {
         //checkMultipleObjects();
         //interruptCheck();
         //getMemoryMap();
-        //enterTextinputMode();
-        getPCIDevices();
+        enterTextinputMode();
+        //getPCIDevices();
     }
 
     private static void getPCIDevices(){
@@ -75,8 +77,8 @@ public class Kernel {
             continuation = BIOS.regs.EBX;
             //Printing Adress and length
             console.printHex(map.baseAddress);
-            console.print(" ");
-            console.printHex(map.length);
+            console.print(" - ");
+            console.printHex(map.baseAddress + map.length -1);
             console.print(" ");
             //type determines if Memory is free or already reserved
             if(map.type == 1){

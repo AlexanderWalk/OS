@@ -6,7 +6,8 @@ public class BIOS {
   private final static int BIOS_MEMORY = 0x60000;
   private final static int BIOS_STKEND = BIOS_MEMORY+0x1000;
   private final static int BIOS_STKBSE = BIOS_STKEND-0x28;
-  private final static int memBuffAddress = 0x7E00;
+  public final static int memBuffAddress = 0x7E00;
+  public final static int BIOSAddressMax = 0xFFFFF;
 
   public static class BIOSRegs extends STRUCT {
     public short DS, ES, FS, FLAGS;
@@ -200,20 +201,23 @@ public class BIOS {
     rint(0x10);
   }
 
-  public static MemoryMapEntry getMemoryMap(int i) {
-    //BIOSBuffer buffer = (BIOSBuffer) MAGIC.cast2Struct(memReadBuffer);
-    regs.EAX = 0x0000E820;
-    regs.EDX = 0x534D4150;
-    regs.EBX = i;
-    regs.ECX = 20;
-    //TODO
-    //Realmode - 20 Bit Adresse, 16 Bit Offset
-    //in ESI und EDI
-    regs.EDI = memBuffAddress;
-    rint(0x15);
+  public static MemoryMapEntry getMemoryMap(int continuationIndex) {
+    memoryMap(continuationIndex);
     long baseAddr = MAGIC.rMem64(memBuffAddress);
     long length = MAGIC.rMem64(memBuffAddress + 8);
     int type = MAGIC.rMem32(memBuffAddress + 16);
     return new MemoryMapEntry(baseAddr, length, type);
+  }
+
+  public static void memoryMap(int continuationIndex){
+    //BIOSBuffer buffer = (BIOSBuffer) MAGIC.cast2Struct(memReadBuffer);
+    regs.EAX = 0x0000E820;
+    regs.EDX = 0x534D4150;
+    regs.EBX = continuationIndex;
+    regs.ECX = 20;
+    //Realmode - 20 Bit Adresse, 16 Bit Offset
+    //regs.ESI = 0;
+    regs.EDI = memBuffAddress;
+    rint(0x15);
   }
 }

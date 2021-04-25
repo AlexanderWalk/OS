@@ -1,6 +1,56 @@
 package rte;
 
+import kernel.BIOS;
+
 public class DynamicRuntime {
+  private static SEmptyObject firstEmptyObj;
+
+  public static void initEmptyObjects(){
+    int continuation = 0;
+    do {
+      BIOS.memoryMap(continuation);
+      //get new continuationIndex from EBX
+      continuation = BIOS.regs.EBX;
+      int type = MAGIC.rMem32(BIOS.memBuffAddress + 16);
+      if(type == 1){
+        //free
+        //alloc empty object
+        int baseAddr = (int)MAGIC.rMem64(BIOS.memBuffAddress);
+        int length = (int)MAGIC.rMem64(BIOS.memBuffAddress + 8);
+        if(baseAddr> BIOS.BIOSAddressMax){
+          int maxAddr = baseAddr+length-1;
+          Object obj = MAGIC.cast2Obj(MAGIC.imageBase+16);
+          while(obj._r_next != null) {
+            obj = obj._r_next;
+          }
+          int newObjectPointer = MAGIC.cast2Ref(obj)+obj._r_scalarSize;
+          for(int i=newObjectPointer; i<=maxAddr; i++){
+            MAGIC.wMem8(i,(byte)0);
+          }
+
+          Object emptyObject = MAGIC.cast2Obj(newObjectPointer);
+          //pointer + 16 Bytes - for 2 Ints and 3 Refs - Type, next, nextEmpty
+          newObjectPointer+=20;
+
+          MAGIC.assign(emptyObject._r_relocEntries,2);
+          MAGIC.assign(obj._r_next,(Object) emptyObject);
+          MAGIC.assign(emptyObject._r_type,MAGIC.clssDesc("SEmptyObject"));
+          MAGIC.assign(emptyObject._r_scalarSize,maxAddr-newObjectPointer+1);
+          if(firstEmptyObj == null){
+            firstEmptyObj = (SEmptyObject) emptyObject;
+          }else{
+            SEmptyObject temp = firstEmptyObj;
+            while(temp.nextEmptyObject!=null){
+              temp = temp.nextEmptyObject;
+            }
+            MAGIC.assign(temp.nextEmptyObject, (SEmptyObject) emptyObject);
+          }
+        }
+      } else{
+        //reserved
+      }
+    } while (continuation != 0);
+  }
   
   public static Object newInstance(int scalarSize, int relocEntries, SClassDesc type) {
     //Pointer auf erstes Objekt im Speicher
@@ -18,7 +68,7 @@ public class DynamicRuntime {
     //relocEntries*4, da Anzahl Pointer à 4 Bytes
     int newObjectEndAdress = newObjectPointer + scalarSize + relocEntries*4 +4;
     for(int i = newObjectPointer; i<newObjectEndAdress;i++) {
-      MAGIC.wMem32(i, 0);
+      MAGIC.wMem8(i, (byte)0);
     }
     //Platz für die relocEntries machen
     newObjectPointer+=relocEntries*4;
