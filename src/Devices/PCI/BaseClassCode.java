@@ -3,6 +3,8 @@ package Devices.PCI;
 public class BaseClassCode {
     public static String codeToString(int code){
         switch(code){
+            case 0x00:
+                return "Altes Geraet";
             case 0x01:
                 return "Massenspeicher";
             case 0x02:
@@ -34,7 +36,7 @@ public class BaseClassCode {
             case 0x0F:
                 return "Satelliten-Kommunikation";
             default:
-                return "Altes Geraet";
+                return "Alt";
         }
     }
 }

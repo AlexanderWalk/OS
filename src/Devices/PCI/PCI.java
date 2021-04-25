@@ -10,7 +10,7 @@ public class PCI {
     public static void searchForDevices(){
         reset();
         devices = new PCIDevice[deviceArraySize];
-        for(busNumber = 0; busNumber<255; busNumber++){
+        for(busNumber = 0; busNumber<256; busNumber++){
             for(deviceNumber=0; deviceNumber<32; deviceNumber++){
                 addDevice();
                 if(isSinglefuncDevice()){
@@ -19,6 +19,7 @@ public class PCI {
                 for(functionNumber=0; functionNumber<8; functionNumber++){
                     addDevice();
                 }
+                functionNumber=0;
             }
         }
         correctArray();
@@ -63,10 +64,11 @@ public class PCI {
     }
 
     private static boolean isSinglefuncDevice(){
-        register += 3;
+        register = 3;
         MAGIC.wIOs32(addrToWrite,getAddress());
         int thirdReg = MAGIC.rIOs32(addrToRead);
         //If highest Bit in Header in Reg 3 is not set -> Singlefunction
+        register = 0;
         return (thirdReg & 0x00800000) == 0;
     }
 
@@ -79,7 +81,7 @@ public class PCI {
             return;
         }
         //second reg with status and operation not needed
-        register += 0x02;
+        register += 2;
         MAGIC.wIOs32(addrToWrite,getAddress());
         int thirdReg = MAGIC.rIOs32(addrToRead);
         //fourth reg not needed
