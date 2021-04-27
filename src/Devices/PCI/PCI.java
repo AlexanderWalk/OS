@@ -1,25 +1,26 @@
 package Devices.PCI;
 
+import output.Console.DebugConsole;
+
 public class PCI {
     private static final int ECD = 0x80<<24, type = 0x0;
     private static final int addrToWrite = 0x0CF8, addrToRead = 0x0CFC;
-    private static int busNumber = 0, deviceNumber = 0, functionNumber = 0, register = 0;
     private static PCIDevice[] devices;
     private static int deviceArraySize = 8, deviceCount = 0;
 
     public static void searchForDevices(){
-        reset();
-        devices = new PCIDevice[deviceArraySize];
-        for(busNumber = 0; busNumber<256; busNumber++){
-            for(deviceNumber=0; deviceNumber<32; deviceNumber++){
-                addDevice();
-                if(isSinglefuncDevice()){
+        devices = new PCIDevice[8];
+        deviceCount = 0;
+        for(int busNumber = 0; busNumber<256; busNumber++){
+            for(int deviceNumber=0; deviceNumber<32; deviceNumber++){
+                addDevice(busNumber, deviceNumber, 0);
+                if(isSinglefuncDevice(busNumber, deviceNumber)){
                     continue;
+                }else{
+                    for(int functionNumber=1; functionNumber<8; functionNumber++){
+                        addDevice(busNumber, deviceNumber, functionNumber);
+                    }
                 }
-                for(functionNumber=0; functionNumber<8; functionNumber++){
-                    addDevice();
-                }
-                functionNumber=0;
             }
         }
         correctArray();
@@ -30,12 +31,6 @@ public class PCI {
             searchForDevices();
         }
         return devices;
-    }
-
-    private static void reset(){
-        devices=null;
-        busNumber = deviceNumber = functionNumber = register = 0;
-        deviceArraySize = 8; deviceCount = 0;
     }
 
     private static void expandArray(){
@@ -58,37 +53,34 @@ public class PCI {
         devices=temp;
     }
 
-    private static int getAddress(){
+    private static int getAddress(int busNumber, int deviceNumber, int functionNumber, int registerNumber){
         return ECD | (busNumber&0xFF)<<16 | (deviceNumber&0x1F)<<11 |
-                functionNumber&0x07<<8 | register&0x3F<<2 | type&0x03;
+                (functionNumber&0x07)<<8 | (registerNumber&0x3F)<<2 | (type&0x03);
     }
 
-    private static boolean isSinglefuncDevice(){
-        register = 3;
-        MAGIC.wIOs32(addrToWrite,getAddress());
-        int thirdReg = MAGIC.rIOs32(addrToRead);
+    private static boolean isSinglefuncDevice(int busNumber, int deviceNumber){
+        writeAddress(getAddress(busNumber, deviceNumber, 0, 3));
+        int register3 = readData();
         //If highest Bit in Header in Reg 3 is not set -> Singlefunction
-        register = 0;
-        return (thirdReg & 0x00800000) == 0;
+        return (register3 & 0x00800000) == 0;
     }
 
-    private static void addDevice(){
+    private static void addDevice(int busNumber, int deviceNumber, int functionNumber){
         //Search at current Address
-        MAGIC.wIOs32(addrToWrite,getAddress());
-        int firstReg = MAGIC.rIOs32(addrToRead);
+        writeAddress(getAddress(busNumber, deviceNumber, functionNumber, 0));
+        int register0 = readData();
         //No device if vendorID and deviceID are 0 or -1
-        if(firstReg == 0 || firstReg == -1){
+        if(register0 == 0 || register0 == -1){
             return;
         }
         //second reg with status and operation not needed
-        register += 2;
-        MAGIC.wIOs32(addrToWrite,getAddress());
-        int thirdReg = MAGIC.rIOs32(addrToRead);
+        writeAddress(getAddress(busNumber, deviceNumber, functionNumber, 2));
+        int register2 = readData();
         //fourth reg not needed
-        int deviceID = (firstReg&0xFFFF0000)>>16;
-        int vendorID = firstReg&0x0000FFFF;
-        int baseclassCode = (thirdReg&0xFF000000)>>24;
-        int subclassCode = (thirdReg&0x00FF0000)>>16;
+        int deviceID = (register0&0xFFFF0000)>>16;
+        int vendorID = register0&0x0000FFFF;
+        int baseclassCode = (register2&0xFF000000)>>24;
+        int subclassCode = (register2&0x00FF0000)>>16;
         PCIDevice device = new PCIDevice(busNumber, deviceNumber, functionNumber,
                                          baseclassCode, subclassCode, vendorID, deviceID);
         if(deviceCount == deviceArraySize){
@@ -96,6 +88,13 @@ public class PCI {
         }
         devices[deviceCount] = device;
         deviceCount++;
-        register = 0;
+    }
+
+    private static void writeAddress(int address){
+        MAGIC.wIOs32(addrToWrite,address);
+    }
+
+    private static int readData(){
+        return MAGIC.rIOs32(addrToRead);
     }
 }

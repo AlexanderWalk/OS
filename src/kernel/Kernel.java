@@ -42,8 +42,8 @@ public class Kernel {
         //checkMultipleObjects();
         //interruptCheck();
         //getMemoryMap();
-        enterTextinputMode();
-        //getPCIDevices();
+        //enterTextinputMode();
+        getPCIDevices();
     }
 
     private static void getPCIDevices(){
@@ -57,7 +57,7 @@ public class Kernel {
             console.print(" | Device: ");
             console.printHex(devices[i].device);
             console.print(" | Function: ");
-            console.printlnHex(devices[i].function);
+            console.printHex(devices[i].function);
             console.print(" Baseclasscode: ");
             console.print(BaseClassCode.codeToString(devices[i].baseclasscode));
             console.print(" | Subclasscode: ");
