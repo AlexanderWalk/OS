@@ -165,9 +165,6 @@ public class Console {
         }
         this.printHexPrefix();
         for(int j = 0; j<byteCount; j++){
-            if(j!=byteCount-1 && b[j]==0){
-                continue;
-            }
             printByteAsHex(b[j]);
         }
     }
