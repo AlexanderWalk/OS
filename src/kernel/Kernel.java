@@ -12,6 +12,9 @@ import output.console.Console;
 import output.console.DebugConsole;
 import output.colors.StaticColors;
 import rte.DynamicRuntime;
+import sheduler.Scheduler;
+import sheduler.task.executable.InBuffer;
+import sheduler.task.executable.Terminal;
 
 public class Kernel {
 
@@ -32,8 +35,13 @@ public class Kernel {
         //for Static Blocks
         MAGIC.doStaticInit();
         Interrupts.initInterrupts();
-        console.clearConsole();
-        console.println("                             Welcome to KasleberkOS                             ");
+        initScheduler();
+    }
+
+    private static void initScheduler(){
+        Scheduler.addTask(new Terminal());
+        Scheduler.addTask(new InBuffer());
+        Scheduler.schedule();
     }
 
     private static void testFunctions(){
@@ -43,7 +51,7 @@ public class Kernel {
         //checkGraphicMode();
         //breakpointCheck();
         //getMemoryMap();
-        enterTextinputMode();
+        //enterTextinputMode();
         //getPCIDevices();
     }
 

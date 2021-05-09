@@ -101,6 +101,7 @@ public class VideoMemory {
         else
             currRow++;
         clearRow(currRow, color);
+        updateCursor();
     }
 
     private static void prevRow(int color){
