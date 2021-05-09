@@ -25,6 +25,12 @@ public class VideoMemory {
         increaseCurrPosition(color);
     }
 
+    public static void delEntry(int color){
+        decreaseCurrPosition(color);
+        setCharAtPosition(space,color,currRow,currEntryPosition);
+        updateCursor();
+    }
+
     public static void newLine(int color){
         nextRow(color);
     }
@@ -74,6 +80,14 @@ public class VideoMemory {
         }
     }
 
+    private static void decreaseCurrPosition(int color){
+        if(currEntryPosition == firstEntry){
+            prevRow(color);
+        }else{
+            currEntryPosition--;
+        }
+    }
+
     private static void resetCurrPosition(){
         currRow=firstRow;
         currEntryPosition=firstEntry;
@@ -87,6 +101,14 @@ public class VideoMemory {
         else
             currRow++;
         clearRow(currRow, color);
+    }
+
+    private static void prevRow(int color){
+        currEntryPosition = lastEntry;
+        if(currRow == firstRow)
+            currRow = lastRow;
+        else
+            currRow--;
     }
 
     private static void clearRow(int row, int color){

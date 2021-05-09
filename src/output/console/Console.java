@@ -22,6 +22,10 @@ public class Console {
         VideoMemory.newLine(this.currentColor.getColor());
     }
 
+    public void delchar(){
+        VideoMemory.delEntry(this.currentColor.getColor());
+    }
+
     //Actual printing
     private void printToVidmem(char c) {
         VideoMemory.writeChar(c,this.currentColor.getColor());

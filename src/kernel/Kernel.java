@@ -102,6 +102,8 @@ public class Kernel {
                     textinput=false;
                 if(keyboardEvent.keyCode<=127)
                     console.print((char)keyboardEvent.keyCode);
+                if(keyboardEvent.keyCode == Key.BACKSPACE)
+                    console.delchar();
             }
         }
     }
