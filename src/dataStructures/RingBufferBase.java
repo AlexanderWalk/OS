@@ -1,4 +1,4 @@
-package DataStructures;
+package dataStructures;
 
 public abstract class RingBufferBase {
     protected static final int defaultSize = 64;

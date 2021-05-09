@@ -1,8 +1,8 @@
-package kernel.Interrupt;
+package kernel.interrupt;
 
-import Devices.Keyboard.Keyboard;
-import Devices.Timer;
-import output.Console.DebugConsole;
+import devices.keyboard.Keyboard;
+import devices.Timer;
+import output.console.DebugConsole;
 
 public class InterruptHandler {
     static final int hardwareInterruptMaster = 0x20;

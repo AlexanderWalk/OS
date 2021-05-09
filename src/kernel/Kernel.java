@@ -1,15 +1,15 @@
 package kernel;
 
-import Devices.Keyboard.Key;
-import Devices.Keyboard.Keyboard;
-import Devices.Keyboard.KeyboardEvent;
-import Devices.PCI.BaseClassCode;
-import Devices.PCI.PCI;
-import Devices.PCI.PCIDevice;
-import Devices.Timer;
-import kernel.Interrupt.Interrupts;
-import output.Console.Console;
-import output.Console.DebugConsole;
+import devices.keyboard.Key;
+import devices.keyboard.Keyboard;
+import devices.keyboard.KeyboardEvent;
+import devices.PCI.BaseClassCode;
+import devices.PCI.PCI;
+import devices.PCI.PCIDevice;
+import devices.Timer;
+import kernel.interrupt.Interrupts;
+import output.console.Console;
+import output.console.DebugConsole;
 import output.colors.StaticColors;
 import rte.DynamicRuntime;
 
@@ -40,10 +40,11 @@ public class Kernel {
         //consoleCheck();
         //debugConsoleCheck();
         //checkMultipleObjects();
-        //interruptCheck();
+        //checkGraphicMode();
+        //breakpointCheck();
         //getMemoryMap();
-        //enterTextinputMode();
-        getPCIDevices();
+        enterTextinputMode();
+        //getPCIDevices();
     }
 
     private static void getPCIDevices(){
@@ -105,8 +106,7 @@ public class Kernel {
         }
     }
 
-    private static void interruptCheck(){
-        console.println("Interrupttests:");
+    private static void checkGraphicMode(){
         //Enter Graphicmode, draw and exit after 5 Seconds
         BIOS.enterGraphicMode();
         for(int i=0;i<32000;i++){
@@ -115,7 +115,9 @@ public class Kernel {
         Timer.sleep(5);
         BIOS.exitGraphicMode();
         console.clearConsole();
-        //Breakpoint
+    }
+
+    private static void breakpointCheck(){
         MAGIC.inline(0xCC);
     }
 

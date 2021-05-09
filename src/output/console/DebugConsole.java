@@ -1,6 +1,6 @@
-package output.Console;
+package output.console;
 
-import output.VideoMem.VideoMemory;
+import output.videoMem.VideoMemory;
 import output.colors.StaticColors;
 
 public class DebugConsole {

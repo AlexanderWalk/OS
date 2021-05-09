@@ -1,8 +1,6 @@
-package Devices.Keyboard;
+package devices.keyboard;
 
-import DataStructures.ByteRingBuffer;
-import output.Console.Console;
-import output.Console.DebugConsole;
+import dataStructures.ByteRingBuffer;
 
 //TODO: Dynamic Device
 public class Keyboard {

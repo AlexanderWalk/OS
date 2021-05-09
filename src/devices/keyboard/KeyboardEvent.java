@@ -1,4 +1,4 @@
-package Devices.Keyboard;
+package devices.keyboard;
 
 public class KeyboardEvent {
     //Modifier

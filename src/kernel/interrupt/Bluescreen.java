@@ -1,6 +1,6 @@
-package kernel.Interrupt;
+package kernel.interrupt;
 
-import output.Console.DebugConsole;
+import output.console.DebugConsole;
 
 public class Bluescreen {
 

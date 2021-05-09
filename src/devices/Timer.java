@@ -1,4 +1,4 @@
-package Devices;
+package devices;
 
 //TODO Timer to ms
 public class Timer {

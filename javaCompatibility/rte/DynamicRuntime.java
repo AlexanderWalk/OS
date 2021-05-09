@@ -1,7 +1,6 @@
 package rte;
 
 import kernel.BIOS;
-import output.Console.DebugConsole;
 
 public class DynamicRuntime {
   private static SEmptyObject firstEmptyObj;
@@ -33,12 +32,14 @@ public class DynamicRuntime {
             for(int i=newObjectPointer; i<newObjectPointer+20; i++){
               MAGIC.wMem8(i,(byte)0);
             }
+            //TODO MAGIC.getInstRelocEntries
             //pointer + 12 Bytes - 3 Refs - Type, next, nextEmpty
             newObjectPointer+=12;
             Object emptyObject = MAGIC.cast2Obj(newObjectPointer);
 
             MAGIC.assign(emptyObject._r_relocEntries,3);
             MAGIC.assign(obj._r_next, emptyObject);
+
             MAGIC.assign(emptyObject._r_type,MAGIC.clssDesc("SEmptyObject"));
             MAGIC.assign(emptyObject._r_scalarSize,maxAddr-newObjectPointer+1);
             if(firstEmptyObj == null){

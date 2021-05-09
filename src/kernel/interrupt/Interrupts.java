@@ -1,8 +1,4 @@
-package kernel.Interrupt;
-
-import Devices.Keyboard.Keyboard;
-import Devices.Timer;
-import output.Console.DebugConsole;
+package kernel.interrupt;
 
 public class Interrupts {
     private static boolean IsInterruptFlagActive = false;

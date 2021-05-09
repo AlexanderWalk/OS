@@ -1,6 +1,4 @@
-package output.VideoMem;
-
-import output.colors.StaticColors;
+package output.videoMem;
 
 public class VideoMemory {
     //rel Address

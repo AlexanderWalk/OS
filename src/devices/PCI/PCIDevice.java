@@ -1,4 +1,4 @@
-package Devices.PCI;
+package devices.PCI;
 
 public class PCIDevice {
     public final int bus, device, function, baseclasscode, subclasscode, vendorID, deviceID;

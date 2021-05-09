@@ -1,6 +1,6 @@
-package Devices.Keyboard;
+package devices.keyboard;
 
-import DataStructures.RingBufferBase;
+import dataStructures.RingBufferBase;
 
 public class KeyboardEventBuffer extends RingBufferBase{
 

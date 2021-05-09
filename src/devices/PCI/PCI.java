@@ -1,6 +1,4 @@
-package Devices.PCI;
-
-import output.Console.DebugConsole;
+package devices.PCI;
 
 public class PCI {
     private static final int ECD = 0x80<<24, type = 0x0;

@@ -1,4 +1,4 @@
-package Devices.PCI;
+package devices.PCI;
 
 public class BaseClassCode {
     public static String codeToString(int code){
