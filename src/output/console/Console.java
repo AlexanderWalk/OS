@@ -14,6 +14,13 @@ public class Console {
         VideoController.setCursorAtPos(x,y);
     }
 
+    public void increaseCursor(){
+        VideoController.increaseCurrPosition();
+    }
+    public void decreaseCursor(){
+        VideoController.decreaseCurrPosition();
+    }
+
     public void clearConsole(){
         VideoController.clearMemory(this.currentColor.getColor());
     }
@@ -26,6 +33,8 @@ public class Console {
         VideoController.deleteChar(this.currentColor.getColor());
     }
 
+    public void tab(){VideoController.tab();}
+
     //Actual printing
     private void printToVidmem(char c) {
         VideoController.writeChar(c,this.currentColor.getColor());
@@ -33,14 +42,11 @@ public class Console {
 
     public void print(char c){
         this.printToVidmem(c);
-        VideoController.updateCursor();
     }
-
 
     public void println(char c){
         this.printToVidmem(c);
         this.println();
-        VideoController.updateCursor();
     }
 
     //Strings
@@ -48,48 +54,40 @@ public class Console {
         if(string!=null)
         for (int i=0; i<string.length(); i++)
             this.printToVidmem(string.charAt(i));
-        VideoController.updateCursor();
     }
 
     public void println(String string){
         this.print(string);
         this.println();
-        VideoController.updateCursor();
     }
     //Strings end
 
     //Decimal values
     public void print(long value){
         this.printRecursiveInt(this.handleNegativevalue(value));
-        VideoController.updateCursor();
     }
 
     public void println(long value){
         this.print(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     public void print(int value){
         this.print((long)value);
-        VideoController.updateCursor();
     }
 
     public void println(int value){
         this.print(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     public void print(short value){
         this.print((long)value);
-        VideoController.updateCursor();
     }
 
     public void println(short value){
         this.print(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     //Handling Decimals
@@ -115,46 +113,38 @@ public class Console {
     //Hex values
     public void printHex(byte b){
         this.printHexvalue(b,1);
-        VideoController.updateCursor();
     }
 
     public void printlnHex(byte b){
         this.printHex(b);
         this.println();
-        VideoController.updateCursor();
     }
 
     public void printHex(short value){
         this.printHexvalue(value,2);
-        VideoController.updateCursor();
     }
 
     public void printlnHex(short value){
         this.printHex(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     public void printHex(int value){
         this.printHexvalue(value,4);
-        VideoController.updateCursor();
     }
 
     public void printlnHex(int value){
         this.printHex(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     public void printHex(long value){
         this.printHexvalue(value, 8);
-        VideoController.updateCursor();
     }
 
     public void printlnHex(long value){
         this.printHex(value);
         this.println();
-        VideoController.updateCursor();
     }
 
     //Handling Hex

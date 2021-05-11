@@ -15,18 +15,25 @@ public class VideoController {
 
     public static void writeChar(char c, int color){
         Video.setCharAtPosition(c,color,currRow,currEntryPosition);
-        increaseCurrPosition(color);
+        increaseCurrPosition();
     }
 
     public static void deleteChar(int color){
         decreaseCurrPosition();
         Video.setCharAtPosition(space,color,currRow,currEntryPosition);
-        updateCursor();
+    }
+
+    public static void tab(){
+        int newPosOffset = 4 - currEntryPosition%4;
+        for(int i = 0; i<newPosOffset; i++){
+            increaseCurrPosition();
+        }
     }
 
     @SJC.Inline
     public static void newLine(int color){
-        nextRow(color);
+        nextRow();
+        Video.clearRow(currRow, color);
     }
 
     public static void clearMemory(int color){
@@ -41,23 +48,25 @@ public class VideoController {
     public static void setCursorAtPos(int positionInRow, int row) {
         currEntryPosition = positionInRow;
         currRow = row;
-        Video.updateCursor(row,positionInRow);
+        updateCursor();
     }
 
-    private static void increaseCurrPosition(int color) {
+    public static void increaseCurrPosition() {
         if (currEntryPosition == lastEntry) {
-            nextRow(color);
+            nextRow();
         } else {
             currEntryPosition++;
         }
+        updateCursor();
     }
 
-    private static void decreaseCurrPosition(){
+    public static void decreaseCurrPosition(){
         if(currEntryPosition == firstEntry){
             prevRow();
         }else{
             currEntryPosition--;
         }
+        updateCursor();
     }
 
     private static void resetCurrPosition(){
@@ -66,14 +75,12 @@ public class VideoController {
         updateCursor();
     }
 
-    private static void nextRow(int color){
+    private static void nextRow(){
         currEntryPosition = firstEntry;
         if(currRow == lastRow)
             currRow=firstRow;
         else
             currRow++;
-        Video.clearRow(currRow, color);
-        updateCursor();
     }
 
     private static void prevRow(){
