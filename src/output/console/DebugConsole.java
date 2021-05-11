@@ -1,6 +1,6 @@
 package output.console;
 
-import output.videoMem.VideoMemory;
+import output.videoMem.VideoController;
 import output.colors.StaticColors;
 
 public class DebugConsole {
@@ -9,7 +9,7 @@ public class DebugConsole {
 
     @SJC.Inline
     public static void clearConsoleDebug(){
-        VideoMemory.clearMemory(defaultBack|defaultFont);
+        VideoController.clearMemory(defaultBack|defaultFont);
     }
 
     @SJC.Inline
@@ -21,12 +21,12 @@ public class DebugConsole {
 
     @SJC.Inline
     public static void debugPrint(char c) {
-        VideoMemory.writeChar(c, defaultBack|defaultFont);
+        VideoController.writeChar(c, defaultBack|defaultFont);
     }
 
     @SJC.Inline
     public static void debugPrintln(){
-        VideoMemory.newLine(defaultBack|defaultFont);
+        VideoController.newLine(defaultBack|defaultFont);
     }
 
     @SJC.Inline
@@ -43,7 +43,7 @@ public class DebugConsole {
 
     public static void debugPrint(int value){
         printRecursiveInt(value);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public static void debugPrintln(int value){
@@ -66,7 +66,7 @@ public class DebugConsole {
     @SJC.Inline
     public static void debugPrintHex(int value){
         printHexvalue(value,4);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     @SJC.Inline

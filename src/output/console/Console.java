@@ -1,6 +1,6 @@
 package output.console;
 
-import output.videoMem.VideoMemory;
+import output.videoMem.VideoController;
 import output.colors.*;
 
 public class Console {
@@ -11,36 +11,36 @@ public class Console {
     }
 
     public void setCursor(int x, int y){
-        VideoMemory.setCursor(x,y);
+        VideoController.setCursorAtPos(x,y);
     }
 
     public void clearConsole(){
-        VideoMemory.clearMemory(this.currentColor.getColor());
+        VideoController.clearMemory(this.currentColor.getColor());
     }
 
     public void println(){
-        VideoMemory.newLine(this.currentColor.getColor());
+        VideoController.newLine(this.currentColor.getColor());
     }
 
     public void delchar(){
-        VideoMemory.delEntry(this.currentColor.getColor());
+        VideoController.deleteChar(this.currentColor.getColor());
     }
 
     //Actual printing
     private void printToVidmem(char c) {
-        VideoMemory.writeChar(c,this.currentColor.getColor());
+        VideoController.writeChar(c,this.currentColor.getColor());
     }
 
     public void print(char c){
         this.printToVidmem(c);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
 
     public void println(char c){
         this.printToVidmem(c);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     //Strings
@@ -48,48 +48,48 @@ public class Console {
         if(string!=null)
         for (int i=0; i<string.length(); i++)
             this.printToVidmem(string.charAt(i));
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void println(String string){
         this.print(string);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
     //Strings end
 
     //Decimal values
     public void print(long value){
         this.printRecursiveInt(this.handleNegativevalue(value));
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void println(long value){
         this.print(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void print(int value){
         this.print((long)value);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void println(int value){
         this.print(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void print(short value){
         this.print((long)value);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void println(short value){
         this.print(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     //Handling Decimals
@@ -115,46 +115,46 @@ public class Console {
     //Hex values
     public void printHex(byte b){
         this.printHexvalue(b,1);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printlnHex(byte b){
         this.printHex(b);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printHex(short value){
         this.printHexvalue(value,2);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printlnHex(short value){
         this.printHex(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printHex(int value){
         this.printHexvalue(value,4);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printlnHex(int value){
         this.printHex(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printHex(long value){
         this.printHexvalue(value, 8);
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     public void printlnHex(long value){
         this.printHex(value);
         this.println();
-        VideoMemory.updateCursor();
+        VideoController.updateCursor();
     }
 
     //Handling Hex
