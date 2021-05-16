@@ -34,6 +34,7 @@ public class VideoController {
     public static void newLine(int color){
         nextRow();
         Video.clearRow(currRow, color);
+        updateCursor();
     }
 
     public static void clearMemory(int color){
