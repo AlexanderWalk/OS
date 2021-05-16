@@ -42,8 +42,7 @@ public class DebugConsole {
     }
 
     public static void debugPrint(int value){
-        printRecursiveInt(value);
-        VideoController.updateCursor();
+        printRecursiveInt(handleNegativevalue(value));
     }
 
     public static void debugPrintln(int value){
@@ -62,11 +61,17 @@ public class DebugConsole {
         debugPrint(currChar);
     }
 
+    private static long handleNegativevalue(long value){
+        if(value<0){
+            debugPrint('-');
+            value*=-1;
+        }
+        return value;
+    }
 
     @SJC.Inline
     public static void debugPrintHex(int value){
         printHexvalue(value,4);
-        VideoController.updateCursor();
     }
 
     @SJC.Inline
