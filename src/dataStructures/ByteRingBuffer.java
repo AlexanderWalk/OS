@@ -1,5 +1,7 @@
 package dataStructures;
 
+import output.console.DebugConsole;
+
 public class ByteRingBuffer extends RingBufferBase{
 
     private byte[] buffer;

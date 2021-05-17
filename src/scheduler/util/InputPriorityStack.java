@@ -1,8 +1,8 @@
-package sheduler.util;
+package scheduler.util;
 
 import dataStructures.StackBase;
-import sheduler.task.InputTask;
-import sheduler.task.Task;
+import scheduler.task.InputTask;
+import scheduler.task.Task;
 
 public class InputPriorityStack extends StackBase {
 

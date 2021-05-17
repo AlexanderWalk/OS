@@ -1,4 +1,4 @@
-package sheduler.task;
+package scheduler.task;
 
 import devices.keyboard.KeyboardReadonlyEventbuffer;
 

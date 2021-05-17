@@ -1,8 +1,7 @@
-package sheduler.util;
+package scheduler.util;
 
 import dataStructures.RingBufferBase;
-import output.console.DebugConsole;
-import sheduler.task.Task;
+import scheduler.task.Task;
 
 public class TaskBuffer extends RingBufferBase {
     private Task[] buffer;

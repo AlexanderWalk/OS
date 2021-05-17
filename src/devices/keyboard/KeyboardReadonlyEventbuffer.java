@@ -1,6 +1,7 @@
 package devices.keyboard;
 
 import dataStructures.RingBufferBase;
+import output.console.DebugConsole;
 
 public class KeyboardReadonlyEventbuffer extends RingBufferBase {
 

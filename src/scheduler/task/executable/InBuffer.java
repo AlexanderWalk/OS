@@ -1,9 +1,9 @@
-package sheduler.task.executable;
+package scheduler.task.executable;
 
 import devices.keyboard.Keyboard;
 import devices.keyboard.KeyboardEventBuffer;
-import sheduler.Scheduler;
-import sheduler.task.Task;
+import scheduler.Scheduler;
+import scheduler.task.Task;
 
 public class InBuffer extends Task {
 

@@ -1,9 +1,9 @@
-package sheduler.task.executable;
+package scheduler.task.executable;
 
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
-import sheduler.Scheduler;
-import sheduler.task.ConsoleTask;
+import scheduler.Scheduler;
+import scheduler.task.ConsoleTask;
 
 public class Terminal extends ConsoleTask {
 

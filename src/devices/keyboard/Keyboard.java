@@ -6,7 +6,7 @@ import dataStructures.ByteRingBuffer;
 public class Keyboard {
     private static ByteRingBuffer inBuffer;
     private static KeyboardEventBuffer outBuffer;
-    private static KeyboardLayout keyboardLayout;
+    private static KeyboardLayout keyboardLayout = new QwertzLayout();
 
     //modifier
     private static boolean shift, control, alt;
@@ -20,7 +20,6 @@ public class Keyboard {
     static{
         inBuffer = new ByteRingBuffer();
         outBuffer = new KeyboardEventBuffer();
-        keyboardLayout = new QwertzLayout();
     }
 
     public static void setKeyboardLayout(KeyboardLayout layout) {

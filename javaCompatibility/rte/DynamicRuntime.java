@@ -1,5 +1,6 @@
 package rte;
 
+import devices.StaticV24;
 import kernel.BIOS;
 import output.console.DebugConsole;
 
@@ -7,11 +8,23 @@ public class DynamicRuntime {
   private static SEmptyObject firstEmptyObj;
   private static SEmptyObject lastEmptyObj;
   private static final int imageBaseAddr = MAGIC.imageBase+16;
+  private static Object firstImageObj;
   private static final int freeMemoryType = 1;
   private static final int memBuffTypeOffset = 16;
   private static final int memBuffLengthOffset = 8;
+  private static Object lastRootObject;
+
+  private static void setLastRootObject(){
+    firstImageObj = MAGIC.cast2Obj(MAGIC.rMem32(imageBaseAddr));
+    Object obj = firstImageObj;
+    while(obj._r_next != null) {
+      obj = obj._r_next;
+    }
+    lastRootObject = obj;
+  }
 
   public static void initEmptyObjects(){
+    setLastRootObject();
     int continuation = 0;
     do {
       BIOS.memoryMap(continuation);
@@ -29,11 +42,9 @@ public class DynamicRuntime {
           //  r_next to last initialized object
           //Or imagebase is in another segment
           if(imageBaseAddr >= segmentBaseAddress && imageBaseAddr <= maxAddr){ //imagebase in segment
-            Object obj = MAGIC.cast2Obj(imageBaseAddr);
-            while(obj._r_next != null) {
-              obj = obj._r_next;
-            }
-            int newObjectPointer = MAGIC.cast2Ref(obj)+obj._r_scalarSize;
+
+
+            int newObjectPointer = MAGIC.cast2Ref(lastRootObject)+lastRootObject._r_scalarSize;
             for(int i=newObjectPointer; i<newObjectPointer+MAGIC.getInstScalarSize("SEmptyObject"); i++){
               MAGIC.wMem8(i,(byte)0);
             }
@@ -43,19 +54,20 @@ public class DynamicRuntime {
             Object emptyObject = MAGIC.cast2Obj(newObjectPointer);
 
             MAGIC.assign(emptyObject._r_relocEntries,MAGIC.getInstRelocEntries("SEmptyObject"));
-            MAGIC.assign(obj._r_next, emptyObject);
+            MAGIC.assign(lastRootObject._r_next, emptyObject);
             MAGIC.assign(emptyObject._r_type,MAGIC.clssDesc("SEmptyObject"));
             MAGIC.assign(emptyObject._r_scalarSize,maxAddr-newObjectPointer+1);
             if(firstEmptyObj == null){
               firstEmptyObj = (SEmptyObject) emptyObject;
             }else{
+              //if there was already an empty object before imagebase
               SEmptyObject temp = firstEmptyObj;
               while(temp.nextEmptyObject!=null){
                 temp = temp.nextEmptyObject;
               }
               MAGIC.assign(temp.nextEmptyObject, (SEmptyObject) emptyObject);
               MAGIC.assign(((SEmptyObject)emptyObject).prevEmptyObject, temp);
-              MAGIC.assign(temp._r_next, MAGIC.cast2Obj(imageBaseAddr));
+              MAGIC.assign(temp._r_next, firstImageObj);
             }
             lastEmptyObj=(SEmptyObject)emptyObject;
           }else{ //imagebase not in segment
@@ -74,7 +86,7 @@ public class DynamicRuntime {
             //Else set it to imagebase object
             if(firstEmptyObj == null){
               firstEmptyObj=(SEmptyObject) emptyObject;
-              Object object = MAGIC.cast2Obj(imageBaseAddr);
+              Object object = firstImageObj;
               while(object._r_next != null){
                 object = object._r_next;
               }
@@ -118,7 +130,7 @@ public class DynamicRuntime {
     //get new Address and set new Scalarsize of EmptyObject
     int newObjectAdress = MAGIC.cast2Ref(emptyObject) + emptyObject._r_scalarSize - scalarSize;
     Object nextObject = emptyObject._r_next;
-    Object prevObject = MAGIC.cast2Obj(imageBaseAddr);
+    Object prevObject = firstImageObj;
     while(prevObject._r_next!=emptyObject){
       prevObject = prevObject._r_next;
     }
@@ -147,6 +159,8 @@ public class DynamicRuntime {
       MAGIC.assign(emptyObject._r_next, newObject);
     else
       MAGIC.assign(prevObject._r_next, newObject);
+
+
     return newObject;
   }
   
@@ -261,4 +275,94 @@ public class DynamicRuntime {
     else if (dest._r_unitType==null) MAGIC.inline(0xCC);
     else isInstance(newEntry, dest._r_unitType, true);
   }
+
+  public static void garbageCollection(){
+    mark();
+    sweep();
+  }
+
+  private static void mark(){
+    Object obj = firstImageObj;
+    markRelocs(obj);
+    do{
+      obj = obj._r_next;
+      markRelocs(obj);
+    }while(obj!=lastRootObject);
+  }
+
+  private static void markRelocs(Object obj){
+    if(obj==null)return;
+    if(obj.gcMark==1)return;
+    MAGIC.assign(obj.gcMark,1);
+    int baseAddr = MAGIC.cast2Ref(obj);
+    baseAddr -=4;
+    //baseAddr -= 3*MAGIC.ptrSize;
+    for(int i=0;i<obj._r_relocEntries;i++){
+      int addr = baseAddr-i*MAGIC.ptrSize;
+      Object o = MAGIC.cast2Obj(MAGIC.rMem32(addr));
+      if(!(isInstance(o,(SClassDesc) MAGIC.clssDesc("Object"),false)||o==null||
+              !isInstance(o,(SClassDesc) MAGIC.clssDesc("SClassDesc"),false)))
+        StaticV24.print("Kein Object");
+      if(o==obj._r_next||o==obj._r_type)
+        continue;
+      markRelocs(o);
+    }
+  }
+
+  private static void sweep(){
+    Object obj = firstImageObj;
+    Object prevObj = null;
+    Object nextObj = obj._r_next;
+    SEmptyObject prevEmptyObject = null;
+
+    while(obj!=null){
+      if(isInstance(obj,(SClassDesc) MAGIC.clssDesc("SEmptyObject"),false)){
+        prevEmptyObject=(SEmptyObject) obj;
+      } else if(obj.gcMark==0){
+          //del Object, create new emptyObject
+          //Object doesnt fit
+          //TODO: Object is smaller than EmptyObject - fix
+          if (obj._r_scalarSize + obj._r_relocEntries * MAGIC.ptrSize < MAGIC.getInstScalarSize("SEmptyObject")
+                  + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize) {
+          } else {
+            StaticV24.print("Found Object to delete");
+              //Object fits
+            int objectAddr = MAGIC.cast2Ref(obj);
+            int objectMemory = obj._r_relocEntries * MAGIC.ptrSize + obj._r_scalarSize;
+            objectAddr -= obj._r_relocEntries * MAGIC.ptrSize;
+            int emptyObjectAddr = objectAddr + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize;
+            for (int i = objectAddr; i < emptyObjectAddr + MAGIC.getInstScalarSize("SEmptyObject"); i++) {
+              MAGIC.wMem8(i, (byte) 0);
+            }
+            Object emptyObj = MAGIC.cast2Obj(emptyObjectAddr);
+            MAGIC.assign(emptyObj._r_type, MAGIC.clssDesc("SEmptyObject"));
+            MAGIC.assign(emptyObj._r_relocEntries, MAGIC.getInstRelocEntries("SEmptyObject"));
+            MAGIC.assign(emptyObj._r_scalarSize, objectMemory - MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize);
+            if (prevObj != null)
+              MAGIC.assign(prevObj._r_next, emptyObj);
+            MAGIC.assign(emptyObj._r_next, nextObj);
+            //Pointers for empty Objects
+            SEmptyObject emptyObject = (SEmptyObject) emptyObj;
+            MAGIC.assign(emptyObject.prevEmptyObject, prevEmptyObject);
+            if (prevEmptyObject != null) {
+              MAGIC.assign(emptyObject.nextEmptyObject, prevEmptyObject.nextEmptyObject);
+              MAGIC.assign(prevEmptyObject.nextEmptyObject, emptyObject);
+              MAGIC.assign(emptyObject.nextEmptyObject.prevEmptyObject, emptyObject);
+            } else {
+              MAGIC.assign(emptyObject.nextEmptyObject, firstEmptyObj);
+              MAGIC.assign(firstEmptyObj.prevEmptyObject, emptyObject);
+              firstEmptyObj = emptyObject;
+            }
+            prevEmptyObject = emptyObject;
+          }
+        }
+        else{
+        MAGIC.assign(obj.gcMark,0);
+      }
+      prevObj=obj;
+      obj = nextObj;
+      nextObj = obj._r_next;
+    }
+  }
 }
+

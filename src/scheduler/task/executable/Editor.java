@@ -1,8 +1,9 @@
-package sheduler.task.executable;
+package scheduler.task.executable;
 
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
-import sheduler.task.ConsoleTask;
+import scheduler.Scheduler;
+import scheduler.task.ConsoleTask;
 
 public class Editor extends ConsoleTask {
 
@@ -14,7 +15,7 @@ public class Editor extends ConsoleTask {
     @Override
     protected void handleCommand(KeyboardEvent event) {
         if(event.control&&event.keyCode==Key.c){
-            this.setTerminationStatus(true);
+            Scheduler.delTask(this);
         }
     }
 }

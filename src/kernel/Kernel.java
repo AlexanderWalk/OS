@@ -1,5 +1,6 @@
 package kernel;
 
+import devices.StaticV24;
 import devices.keyboard.Key;
 import devices.keyboard.Keyboard;
 import devices.keyboard.KeyboardEvent;
@@ -12,9 +13,10 @@ import output.console.Console;
 import output.console.DebugConsole;
 import output.colors.StaticColors;
 import rte.DynamicRuntime;
-import sheduler.Scheduler;
-import sheduler.task.executable.InBuffer;
-import sheduler.task.executable.Terminal;
+import scheduler.Scheduler;
+import scheduler.task.executable.GarbageCollector;
+import scheduler.task.executable.InBuffer;
+import scheduler.task.executable.Terminal;
 
 public class Kernel {
 
@@ -41,6 +43,7 @@ public class Kernel {
     private static void initScheduler(){
         Scheduler.addTask(new Terminal());
         Scheduler.addTask(new InBuffer());
+        Scheduler.addTask(new GarbageCollector());
         Scheduler.schedule();
     }
 

@@ -1,10 +1,12 @@
-package sheduler.task;
+package scheduler.task;
 
+import devices.StaticV24;
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
+import output.colors.StaticColors;
 import output.console.Console;
-import sheduler.Scheduler;
-import sheduler.task.executable.Editor;
+import output.console.DebugConsole;
+import scheduler.Scheduler;
 
 public abstract class ConsoleTask extends InputTask{
 
@@ -27,7 +29,8 @@ public abstract class ConsoleTask extends InputTask{
             this.console.println();
             this.console.print(prompt);
         }
-        while(buffer.canRead()&&!this.hasTerminated()){
+        //TODO bug mit null? keine nullpointerexception wtf
+        while(buffer!=null && buffer.canRead()&&!this.hasTerminated()){
             KeyboardEvent event = buffer.readEvent();
             if(event.alt||event.control){
                 this.handleCommand(event);
