@@ -1,27 +1,18 @@
 package scheduler;
 
-import devices.StaticV24;
-import output.console.DebugConsole;
-import rte.DynamicRuntime;
-import rte.SClassDesc;
 import scheduler.task.InputTask;
 import scheduler.task.Task;
 import scheduler.util.InputPriorityStack;
-import scheduler.util.TaskBuffer;
 
 public class Scheduler {
 
     private static int maxTasks = 32;
-    //Doch Array statt Ringbuffer - weil Ringbuffer ohne overflow verfehlt ein wenig das eigentliche Ziel
-    //TODO private
-    //public static TaskBuffer tasks;
     private static Task[] tasks;
     private static int taskptr = 0;
     private static InputPriorityStack inputPriority;
 
     static{
         tasks=new Task[maxTasks];
-        //tasks = new TaskBuffer(maxTasks);
         inputPriority = new InputPriorityStack(maxTasks);
     }
 
@@ -40,31 +31,24 @@ public class Scheduler {
 
     public static void delTask(Task t){
         t.terminateTask();
-        if(t.hasInput()){
-            if(t == inputPriority.peak()){
-                inputPriority.pop();
-            }else{
-                inputPriority.customDelete(t);
-            }
-        }
     }
 
     public static void schedule(){
         while(true){
-            Task currTask = tasks[taskptr];
-            if(taskptr==maxTasks-1){
-                taskptr=0;
+            for(taskptr=0;taskptr<maxTasks;taskptr++){
+                Task currTask = tasks[taskptr];
+                if(currTask == null || currTask.hasTerminated()){
+                    continue;
+                }
+                currTask.execute();
             }
-            else
-                taskptr++;
-            if(currTask == null || currTask.hasTerminated()){
-                continue;
-            }
-            currTask.execute();
         }
     }
 
     public static InputTask getCurrInputTask(){
+        while(inputPriority.peak().hasTerminated()){
+            inputPriority.pop();
+        }
         return inputPriority.peak();
     }
 }
