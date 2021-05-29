@@ -2,6 +2,7 @@ package kernel.interrupt;
 
 import devices.keyboard.Keyboard;
 import devices.Timer;
+import kernel.VirtualMemory;
 import output.console.DebugConsole;
 
 public class InterruptHandler {
@@ -40,7 +41,8 @@ public class InterruptHandler {
         int ebp=0;
         MAGIC.inline(0x89, 0x6D);
         MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
-        Bluescreen.createBluescreen("Breakpoint",ebp);
+        Bluescreen.createBluescreen("Breakpoint");
+        Bluescreen.printStackTrace(ebp);
         while(true);
     }
     static int breakpointOffset() {
@@ -61,7 +63,8 @@ public class InterruptHandler {
         int ebp=0;
         MAGIC.inline(0x89, 0x6D);
         MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
-        Bluescreen.createBluescreen("Index out of Range",ebp);
+        Bluescreen.createBluescreen("Index out of Range");
+        Bluescreen.printStackTrace(ebp);
         while(true);
     }
     static int indexOutOfRangeOffset() {
@@ -106,8 +109,13 @@ public class InterruptHandler {
     }
 
     @SJC.Interrupt
-    private static void pageFault(){
-        DebugConsole.debugPrint("pageFault");
+    private static void pageFault(int errorCode){
+        int ebp=0;
+        MAGIC.inline(0x89, 0x6D);
+        MAGIC.inlineOffset(1, ebp); //mov [ebp+xx],ebp
+        Bluescreen.createBluescreen("Page Fault");
+        Bluescreen.printStackTrace(ebp);
+        Bluescreen.pageFaultError(VirtualMemory.getCR2(),errorCode);
         while(true);
     }
     static int pageFaultOffset() {

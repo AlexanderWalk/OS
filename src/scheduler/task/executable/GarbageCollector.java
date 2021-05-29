@@ -1,8 +1,6 @@
 package scheduler.task.executable;
 
-import devices.StaticV24;
 import rte.DynamicRuntime;
-import scheduler.Scheduler;
 import scheduler.task.Task;
 
 public class GarbageCollector extends Task {

@@ -2,7 +2,6 @@ package rte;
 
 import devices.StaticV24;
 import kernel.BIOS;
-import output.console.DebugConsole;
 
 public class DynamicRuntime {
   private static SEmptyObject firstEmptyObj;
@@ -204,7 +203,7 @@ public class DynamicRuntime {
   
   public static boolean isInstance(Object o, SClassDesc dest, boolean asCast) {
     SClassDesc check;
-    
+
     if (o==null) {
       if (asCast) return true; //null matches all
       return false; //null is not an instance
@@ -296,7 +295,6 @@ public class DynamicRuntime {
     MAGIC.assign(obj.gcMark,1);
     int baseAddr = MAGIC.cast2Ref(obj);
     baseAddr -=4;
-    //baseAddr -= 3*MAGIC.ptrSize;
     for(int i=0;i<obj._r_relocEntries;i++){
       int addr = baseAddr-i*MAGIC.ptrSize;
       Object o = MAGIC.cast2Obj(MAGIC.rMem32(addr));
@@ -314,8 +312,7 @@ public class DynamicRuntime {
     Object prevObj = null;
     Object nextObj = obj._r_next;
     SEmptyObject prevEmptyObject = null;
-
-    while(obj!=null){
+    while(true){
       if(isInstance(obj,(SClassDesc) MAGIC.clssDesc("SEmptyObject"),false)){
         prevEmptyObject=(SEmptyObject) obj;
       } else if(obj.gcMark==0){
@@ -347,7 +344,8 @@ public class DynamicRuntime {
             if (prevEmptyObject != null) {
               MAGIC.assign(emptyObject.nextEmptyObject, prevEmptyObject.nextEmptyObject);
               MAGIC.assign(prevEmptyObject.nextEmptyObject, emptyObject);
-              MAGIC.assign(emptyObject.nextEmptyObject.prevEmptyObject, emptyObject);
+              if(emptyObject.nextEmptyObject!=null)
+                MAGIC.assign(emptyObject.nextEmptyObject.prevEmptyObject, emptyObject);
             } else {
               MAGIC.assign(emptyObject.nextEmptyObject, firstEmptyObj);
               MAGIC.assign(firstEmptyObj.prevEmptyObject, emptyObject);
@@ -361,6 +359,9 @@ public class DynamicRuntime {
       }
       prevObj=obj;
       obj = nextObj;
+      if(obj==null){
+        return;
+      }
       nextObj = obj._r_next;
     }
   }

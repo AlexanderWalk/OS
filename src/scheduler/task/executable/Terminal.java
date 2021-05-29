@@ -15,8 +15,23 @@ public class Terminal extends ConsoleTask {
 
     @Override
     protected void handleCommand(KeyboardEvent event) {
-        if (event.control && event.keyCode == Key.a) {
-            Scheduler.addTask(new Editor());
+        if(event.control){
+            switch(event.keyCode){
+                case Key.a:
+                    Scheduler.addTask(new Editor());
+                    break;
+                case Key.b:
+                    Scheduler.addTask(new ForceBreakPoint());
+                    break;
+                case Key.p:
+                    ForcePageFault testPageFault = new ForcePageFault();
+                    if(event.alt)
+                        testPageFault.testLastPage();
+                    else
+                        testPageFault.testFirstPage();
+                    Scheduler.addTask(testPageFault);
+                    break;
+            }
         }
     }
 }

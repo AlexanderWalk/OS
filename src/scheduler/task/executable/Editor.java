@@ -15,7 +15,7 @@ public class Editor extends ConsoleTask {
     @Override
     protected void handleCommand(KeyboardEvent event) {
         if(event.control&&event.keyCode==Key.c){
-            Scheduler.delTask(this);
+            this.terminateTask();
         }
     }
 }

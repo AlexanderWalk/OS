@@ -33,8 +33,8 @@ public class Kernel {
     }
 
     private static void initKernel(){
+        VirtualMemory.enableVirtualMemory();
         DynamicRuntime.initEmptyObjects();
-        //for Static Blocks
         MAGIC.doStaticInit();
         Interrupts.initInterrupts();
         initScheduler();
