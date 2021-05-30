@@ -1,5 +1,6 @@
 package kernel.interrupt;
 
+import kernel.SymbolInformation;
 import output.console.DebugConsole;
 
 public class StackTrace {
@@ -16,6 +17,16 @@ public class StackTrace {
             DebugConsole.debugPrintHex(EBP);
             DebugConsole.debugPrint(" | EIP: ");
             DebugConsole.debugPrintlnHex(EIP);
+            DebugConsole.debugPrint(" Method: ");
+            String[] methodInfo = SymbolInformation.getFullMethodInfo(EIP);
+            for(int i=0;i<methodInfo.length;i++){
+                DebugConsole.debugPrint(methodInfo[i]);
+                if(i!=methodInfo.length-1){
+                    DebugConsole.debugPrint(".");
+                }else{
+                    DebugConsole.debugPrintln();
+                }
+            }
             //EBP points to base of previous Stackframe
             EBP= MAGIC.rMem32(EBP);
             //old eip in normal Method is 1 address away -> 1*4 Bytes
