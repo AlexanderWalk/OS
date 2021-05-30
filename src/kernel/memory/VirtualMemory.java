@@ -1,4 +1,4 @@
-package kernel;
+package kernel.memory;
 
 import devices.StaticV24;
 

@@ -1,6 +1,5 @@
 package kernel;
 
-import devices.StaticV24;
 import devices.keyboard.Key;
 import devices.keyboard.Keyboard;
 import devices.keyboard.KeyboardEvent;
@@ -9,6 +8,8 @@ import devices.PCI.PCI;
 import devices.PCI.PCIDevice;
 import devices.Timer;
 import kernel.interrupt.Interrupts;
+import kernel.memory.MemoryMapEntry;
+import kernel.memory.VirtualMemory;
 import output.console.Console;
 import output.console.DebugConsole;
 import output.colors.StaticColors;

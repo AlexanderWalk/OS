@@ -2,7 +2,7 @@ package kernel.interrupt;
 
 import devices.keyboard.Keyboard;
 import devices.Timer;
-import kernel.VirtualMemory;
+import kernel.memory.VirtualMemory;
 import output.console.DebugConsole;
 
 public class InterruptHandler {

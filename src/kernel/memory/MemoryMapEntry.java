@@ -1,4 +1,4 @@
-package kernel;
+package kernel.memory;
 
 public class MemoryMapEntry {
     public long baseAddress;
