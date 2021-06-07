@@ -1,5 +1,4 @@
 # Default ignored files
 /.idea/
 /Compiler/*
-!/Compiler/rte/
-
+!/Compiler/compile.bat
