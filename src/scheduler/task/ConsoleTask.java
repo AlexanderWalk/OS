@@ -17,7 +17,7 @@ public abstract class ConsoleTask extends InputTask{
 
     @Override
     public void execute(){
-        if(!this.isFocused()){
+        if(!this.isFocused()||this.buffer==null){
             return;
         }else {
             if (this.wasOutOfFcous()) {
@@ -25,8 +25,7 @@ public abstract class ConsoleTask extends InputTask{
                 this.console.print(prompt);
             }
         }
-        //TODO bug mit null? keine nullpointerexception wtf
-        while(buffer!=null && buffer.canRead()&&!this.hasTerminated()){
+        while(buffer.canRead()&&!this.hasTerminated()){
             KeyboardEvent event = buffer.readEvent();
             if(event.alt||event.control){
                 this.handleCommand(event);

@@ -298,10 +298,11 @@ public class DynamicRuntime {
     for(int i=2;i<obj._r_relocEntries;i++){
       int addr = baseAddr-i*MAGIC.ptrSize;
       Object o = MAGIC.cast2Obj(MAGIC.rMem32(addr));
+      //Sanity-Check - should never happen
       if(!(isInstance(o,(SClassDesc) MAGIC.clssDesc("Object"),false)||o==null||
-              !isInstance(o,(SClassDesc) MAGIC.clssDesc("SClassDesc"),false)))
-        StaticV24.print("Kein Object");
-
+              !isInstance(o,(SClassDesc) MAGIC.clssDesc("SClassDesc"),false))){
+        MAGIC.inline(0xCC);
+      }
       markRelocs(o);
     }
   }
@@ -309,65 +310,73 @@ public class DynamicRuntime {
   private static void sweep(){
     Object obj = firstImageObj;
     Object prevObj = null;
-    Object nextObj = obj._r_next;
+    Object nextObj;
     SEmptyObject prevEmptyObject = null;
-    while(true){
-      if(isInstance(obj,(SClassDesc) MAGIC.clssDesc("SEmptyObject"),false)){
-        prevEmptyObject=(SEmptyObject) obj;
-      } else if(obj.gcMark==0){
-          //del Object, create new emptyObject
-          //Object doesnt fit
-          //TODO: Object is smaller than EmptyObject - fix
-          if (obj._r_scalarSize + obj._r_relocEntries * MAGIC.ptrSize < MAGIC.getInstScalarSize("SEmptyObject")
-                  + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize) {
-          } else {
-            if(obj._r_type!=null) {
-              StaticV24.print("gc: ");
-              StaticV24.println(obj._r_type.name);
-            }else {
-              StaticV24.print("gc: ");
-              StaticV24.println("Type of Object was null");
-            }
-              //Object fits
-            int objectAddr = MAGIC.cast2Ref(obj);
-            int objectMemory = obj._r_relocEntries * MAGIC.ptrSize + obj._r_scalarSize;
-            objectAddr -= obj._r_relocEntries * MAGIC.ptrSize;
-            int emptyObjectAddr = objectAddr + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize;
-            for (int i = objectAddr; i < emptyObjectAddr + MAGIC.getInstScalarSize("SEmptyObject"); i++) {
-              MAGIC.wMem8(i, (byte) 0);
-            }
-            Object emptyObj = MAGIC.cast2Obj(emptyObjectAddr);
-            MAGIC.assign(emptyObj._r_type, MAGIC.clssDesc("SEmptyObject"));
-            MAGIC.assign(emptyObj._r_relocEntries, MAGIC.getInstRelocEntries("SEmptyObject"));
-            MAGIC.assign(emptyObj._r_scalarSize, objectMemory - MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize);
-            if (prevObj != null)
-              MAGIC.assign(prevObj._r_next, emptyObj);
-            MAGIC.assign(emptyObj._r_next, nextObj);
-            //Pointers for empty Objects
-            SEmptyObject emptyObject = (SEmptyObject) emptyObj;
-            MAGIC.assign(emptyObject.prevEmptyObject, prevEmptyObject);
-            if (prevEmptyObject != null) {
-              MAGIC.assign(emptyObject.nextEmptyObject, prevEmptyObject.nextEmptyObject);
-              MAGIC.assign(prevEmptyObject.nextEmptyObject, emptyObject);
-              if(emptyObject.nextEmptyObject!=null)
-                MAGIC.assign(emptyObject.nextEmptyObject.prevEmptyObject, emptyObject);
-            } else {
-              MAGIC.assign(emptyObject.nextEmptyObject, firstEmptyObj);
-              MAGIC.assign(firstEmptyObj.prevEmptyObject, emptyObject);
-              firstEmptyObj = emptyObject;
-            }
-            prevEmptyObject = emptyObject;
-          }
-        }
-        else{
-        MAGIC.assign(obj.gcMark,0);
-      }
-      prevObj=obj;
-      obj = nextObj;
-      if(obj==null){
-        return;
-      }
+
+    while (obj != null) {
       nextObj = obj._r_next;
+      //Check if curr object is of type SEmptyObject
+      if (isInstance(obj, (SClassDesc) MAGIC.clssDesc("SEmptyObject"), false)) {
+        prevEmptyObject = (SEmptyObject) obj;
+        //If mark is zero - delete Object and create new SEmptyobject
+      } else if (obj.gcMark == 0) {
+        //This if was taken from Stich Niklas - much thanks, stonks
+        int objectMemory = obj._r_relocEntries * MAGIC.ptrSize + obj._r_scalarSize;
+        //check if emptyObject even fits
+        if (objectMemory < MAGIC.getInstScalarSize("SEmptyObject")
+                + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize) {
+          if (isInstance(prevObj, (SClassDesc) MAGIC.clssDesc("SEmptyObject"), false)) {
+            //previous object is an empty object, so instead of becoming one ourselves we just tell it to expand
+            //only thing we need to correct are _next_ pointers
+            SEmptyObject eObj = (SEmptyObject) prevObj;
+            StaticV24.print(" fast-delete:");
+            StaticV24.print(obj._r_type.name);
+            MAGIC.assign(eObj._r_scalarSize, eObj._r_scalarSize + objectMemory);
+            MAGIC.assign(eObj._r_next, obj._r_next);
+            obj = prevObj;
+          }
+        } else {
+          //Object fits
+          if (obj._r_type != null) {
+            StaticV24.print("gc: ");
+            StaticV24.println(obj._r_type.name);
+          } else {
+            StaticV24.print("gc: ");
+            StaticV24.println("Type of Object was null");
+          }
+          int objectAddr = MAGIC.cast2Ref(obj);
+          objectAddr -= obj._r_relocEntries * MAGIC.ptrSize;
+          int emptyObjectAddr = objectAddr + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize;
+          for (int i = objectAddr; i < emptyObjectAddr + MAGIC.getInstScalarSize("SEmptyObject"); i++) {
+            MAGIC.wMem8(i, (byte) 0);
+          }
+          Object emptyObj = MAGIC.cast2Obj(emptyObjectAddr);
+          MAGIC.assign(emptyObj._r_type, MAGIC.clssDesc("SEmptyObject"));
+          MAGIC.assign(emptyObj._r_relocEntries, MAGIC.getInstRelocEntries("SEmptyObject"));
+          MAGIC.assign(emptyObj._r_scalarSize, objectMemory - MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize);
+          if (prevObj != null)
+            MAGIC.assign(prevObj._r_next, emptyObj);
+          MAGIC.assign(emptyObj._r_next, nextObj);
+          //Pointers for empty Objects
+          SEmptyObject emptyObject = (SEmptyObject) emptyObj;
+          MAGIC.assign(emptyObject.prevEmptyObject, prevEmptyObject);
+          if (prevEmptyObject != null) {
+            MAGIC.assign(emptyObject.nextEmptyObject, prevEmptyObject.nextEmptyObject);
+            MAGIC.assign(prevEmptyObject.nextEmptyObject, emptyObject);
+            if (emptyObject.nextEmptyObject != null)
+              MAGIC.assign(emptyObject.nextEmptyObject.prevEmptyObject, emptyObject);
+          } else {
+            MAGIC.assign(emptyObject.nextEmptyObject, firstEmptyObj);
+            MAGIC.assign(firstEmptyObj.prevEmptyObject, emptyObject);
+            firstEmptyObj = emptyObject;
+          }
+          prevEmptyObject = emptyObject;
+        }
+      } else {
+        MAGIC.assign(obj.gcMark, 0);
+        prevObj = obj;
+      }
+      obj = nextObj;
     }
   }
 }
