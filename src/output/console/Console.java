@@ -1,7 +1,7 @@
 package output.console;
 
 import output.videoMem.VideoController;
-import output.colors.*;
+import output.consolecolors.*;
 
 public class Console {
     public final ConsoleColor currentColor= new ConsoleColor();

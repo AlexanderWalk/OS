@@ -1,7 +1,7 @@
 package output.console;
 
 import output.videoMem.VideoController;
-import output.colors.StaticColors;
+import output.consolecolors.StaticColors;
 
 public class DebugConsole {
     private static final int defaultBack=StaticColors.back_blue;

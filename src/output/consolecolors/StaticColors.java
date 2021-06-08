@@ -1,4 +1,4 @@
-package output.colors;
+package output.consolecolors;
 
 public class StaticColors {
     private static final int light_version = 0x08;

@@ -1,4 +1,4 @@
-package output.colors;
+package output.consolecolors;
 
 public class ConsoleColor{
     protected int color;

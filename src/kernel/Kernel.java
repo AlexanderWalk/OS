@@ -12,7 +12,7 @@ import kernel.memory.MemoryMapEntry;
 import kernel.memory.VirtualMemory;
 import output.console.Console;
 import output.console.DebugConsole;
-import output.colors.StaticColors;
+import output.consolecolors.StaticColors;
 import rte.DynamicRuntime;
 import scheduler.Scheduler;
 import scheduler.task.executable.GarbageCollector;
