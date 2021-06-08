@@ -2,6 +2,8 @@ package rte;
 
 import devices.StaticV24;
 import kernel.BIOS;
+import paint.bitmap.*;
+import output.vesa.*;
 
 public class DynamicRuntime {
   private static SEmptyObject firstEmptyObj;
@@ -338,6 +340,12 @@ public class DynamicRuntime {
         } else {
           //Object fits
           if (obj._r_type != null) {
+            //TODO: Find out why type.name is Object without those "if" below
+            /*if(obj._r_type==MAGIC.clssDesc("Bitmap")){}
+            if(obj._r_type==MAGIC.clssDesc("VESAMode")){}
+            if(obj._r_type==MAGIC.clssDesc("BitmapBuilder")){}
+            if(obj._r_type==MAGIC.clssDesc("BitmapInfoHeader")){}
+            if(obj._r_type==MAGIC.clssDesc("BitmapFileHeader")){}*/
             StaticV24.print("gc: ");
             StaticV24.println(obj._r_type.name);
           } else {

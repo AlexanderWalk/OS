@@ -1,5 +1,5 @@
 package output.vesa;
-import kernel.Kernel;
+import devices.StaticV24;
 import kernel.BIOS;
 public class VESAGraphics extends VGA {
   public final static int KM_SCRATCH  = 0x9F000; //one page for scratch buffer
@@ -78,20 +78,27 @@ public class VESAGraphics extends VGA {
   }
   public void printModi(){
 	  VESAMode mode=modes;
-	  /*Kernel.out.reset();
 	  //screen.cls();
 	  while(mode!=null){
-		  Kernel.out.print("xRES: ");
-		  Kernel.out.print(mode.xRes);
-		  Kernel.out.print(" yRES: ");
-		  Kernel.out.print(mode.yRes);
-		  Kernel.out.print(" colDepth: ");
-		  Kernel.out.print(mode.colDepth);
-		  Kernel.out.print(" Graphical: ");
-		  if(mode.graphical) Kernel.out.println("true ");
-		  else Kernel.out.println("false");
+		  StaticV24.print("xRES: ");
+          StaticV24.print(mode.xRes);
+          StaticV24.print(" yRES: ");
+          StaticV24.print(mode.yRes);
+          StaticV24.print(" colDepth: ");
+          StaticV24.print(mode.colDepth);
+          StaticV24.print(" Graphical: ");
+		  if(mode.graphical) StaticV24.println("true ");
+		  else StaticV24.println("false");
 		  mode=mode.nextMode;
-	  }*/
+	  }
+  }
+
+  public void setMode(VESAMode mode){
+    //TODO: check for possible errors
+    curMode=mode;
+    BIOS.regs.EAX=0x4F02; //set current mode
+    BIOS.regs.EBX=mode.modeNr;
+    BIOS.rint(0x10);
   }
   
   public boolean setMode(int xRes, int yRes, int colDepth, boolean graphical) {
