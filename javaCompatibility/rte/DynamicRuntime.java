@@ -294,15 +294,14 @@ public class DynamicRuntime {
     if(obj.gcMark==1)return;
     MAGIC.assign(obj.gcMark,1);
     int baseAddr = MAGIC.cast2Ref(obj);
-    baseAddr -=4;
-    for(int i=0;i<obj._r_relocEntries;i++){
+    baseAddr -=MAGIC.ptrSize;
+    for(int i=2;i<obj._r_relocEntries;i++){
       int addr = baseAddr-i*MAGIC.ptrSize;
       Object o = MAGIC.cast2Obj(MAGIC.rMem32(addr));
       if(!(isInstance(o,(SClassDesc) MAGIC.clssDesc("Object"),false)||o==null||
               !isInstance(o,(SClassDesc) MAGIC.clssDesc("SClassDesc"),false)))
         StaticV24.print("Kein Object");
-      if(o==obj._r_next||o==obj._r_type)
-        continue;
+
       markRelocs(o);
     }
   }
@@ -322,7 +321,13 @@ public class DynamicRuntime {
           if (obj._r_scalarSize + obj._r_relocEntries * MAGIC.ptrSize < MAGIC.getInstScalarSize("SEmptyObject")
                   + MAGIC.getInstRelocEntries("SEmptyObject") * MAGIC.ptrSize) {
           } else {
-            StaticV24.print("Found Object to delete");
+            if(obj._r_type!=null) {
+              StaticV24.print("gc: ");
+              StaticV24.println(obj._r_type.name);
+            }else {
+              StaticV24.print("gc: ");
+              StaticV24.println("Type of Object was null");
+            }
               //Object fits
             int objectAddr = MAGIC.cast2Ref(obj);
             int objectMemory = obj._r_relocEntries * MAGIC.ptrSize + obj._r_scalarSize;
