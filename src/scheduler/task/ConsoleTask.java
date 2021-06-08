@@ -1,12 +1,9 @@
 package scheduler.task;
 
-import devices.StaticV24;
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
-import output.colors.StaticColors;
 import output.console.Console;
-import output.console.DebugConsole;
-import scheduler.Scheduler;
+
 
 public abstract class ConsoleTask extends InputTask{
 
@@ -20,14 +17,13 @@ public abstract class ConsoleTask extends InputTask{
 
     @Override
     public void execute(){
-        if(this!= Scheduler.getCurrInputTask()){
-            this.outOfFocus=true;
+        if(!this.isFocused()){
             return;
-        }
-        if(outOfFocus){
-            this.outOfFocus=false;
-            this.console.println();
-            this.console.print(prompt);
+        }else {
+            if (this.wasOutOfFcous()) {
+                this.console.println();
+                this.console.print(prompt);
+            }
         }
         //TODO bug mit null? keine nullpointerexception wtf
         while(buffer!=null && buffer.canRead()&&!this.hasTerminated()){

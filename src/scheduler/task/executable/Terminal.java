@@ -2,6 +2,7 @@ package scheduler.task.executable;
 
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
+import paint.PaintTask;
 import scheduler.Scheduler;
 import scheduler.task.ConsoleTask;
 
@@ -30,6 +31,9 @@ public class Terminal extends ConsoleTask {
                     else
                         testPageFault.testFirstPage();
                     Scheduler.addTask(testPageFault);
+                    break;
+                case Key.q:
+                    Scheduler.addTask(new PaintTask());
                     break;
             }
         }

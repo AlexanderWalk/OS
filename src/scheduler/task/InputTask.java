@@ -1,6 +1,7 @@
 package scheduler.task;
 
 import devices.keyboard.KeyboardReadonlyEventbuffer;
+import scheduler.Scheduler;
 
 public abstract class InputTask extends Task{
 
@@ -14,5 +15,21 @@ public abstract class InputTask extends Task{
 
     public void setBuffer(KeyboardReadonlyEventbuffer buffer){
         this.buffer=buffer;
+    }
+
+    protected boolean isFocused(){
+        boolean focus = this==Scheduler.getCurrInputTask();
+        if(focus==false){
+            this.outOfFocus=true;
+        }
+        return focus;
+    }
+
+    protected boolean wasOutOfFcous(){
+        if(this.outOfFocus){
+            this.outOfFocus = false;
+            return true;
+        }
+        return false;
     }
 }
