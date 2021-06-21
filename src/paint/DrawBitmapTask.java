@@ -4,13 +4,13 @@ import output.vesa.VESAModeSelector;
 import paint.bitmap.Bitmap;
 import scheduler.task.Task;
 
-public class BitmapTask extends Task {
+public class DrawBitmapTask extends Task {
 
     private final Bitmap bitmap;
     private final int xOffset;
     private final int yOffset;
 
-    public BitmapTask(Bitmap bitmap, int xOffset, int yOffset){
+    public DrawBitmapTask(Bitmap bitmap, int xOffset, int yOffset){
         this.bitmap = bitmap;
         this.xOffset=xOffset;
         this.yOffset=yOffset;

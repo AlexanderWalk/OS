@@ -32,6 +32,7 @@ public class IconPanel extends BitmapPanel {
 
     public void activate(){
         this.active=true;
+        this.mode.activate();
         this.iconBorder=new BitmapPanel(iconBorderActive,this,-3,-3);
         this.draw();
     }

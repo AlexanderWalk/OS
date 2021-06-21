@@ -2,20 +2,23 @@ package paint.panel;
 
 import binimp.ByteData;
 import paint.bitmap.Bitmap;
-import paint.modes.CursorMode;
-import paint.modes.DrawMode;
 import paint.modes.ModeBase;
+import paint.modes.ModeFactory;
 
 public class ControlPanel extends PanelBase{
 
+    public static final int panelHeight=300;
+    public static final int panelWidth=100;
     private int activeMode=-1;
     private int currModeCount;
     private int maxModeCount=2;
     private IconPanel[] modes;
+    private ModeFactory modeFactory;
 
-    public ControlPanel(){
-        this.height=300;
-        this.width=100;
+    public ControlPanel(ModeFactory factory){
+        this.height=ControlPanel.panelHeight;
+        this.width=ControlPanel.panelWidth;
+        this.modeFactory=factory;
     }
 
     @Override
@@ -76,10 +79,12 @@ public class ControlPanel extends PanelBase{
         this.addBorder(3);
         PanelBase spaceButton = new BitmapPanel(new Bitmap(ByteData.spaceButton),this,10,10);
         this.addChild(spaceButton);
-        IconPanel mouseIcon = new IconPanel(new Bitmap(ByteData.mouseIcon),this,10,50,new CursorMode());
+        IconPanel mouseIcon = new IconPanel(new Bitmap(ByteData.mouseIcon),this,10,50,
+                this.modeFactory.getCursorMode());
         this.addMode(mouseIcon);
         this.addChild(mouseIcon);
-        IconPanel pencilIcon = new IconPanel(new Bitmap(ByteData.pencilIcon),this,60,50, new DrawMode());
+        IconPanel pencilIcon = new IconPanel(new Bitmap(ByteData.pencilIcon),this,60,50,
+                this.modeFactory.getDrawMode());
         this.addMode(pencilIcon);
         this.addChild(pencilIcon);
         this.setupMode();

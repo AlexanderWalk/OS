@@ -1,6 +1,6 @@
 package paint.panel;
 
-import paint.BitmapTask;
+import paint.DrawBitmapTask;
 import paint.bitmap.Bitmap;
 import scheduler.Scheduler;
 
@@ -21,6 +21,6 @@ public class BitmapPanel extends PanelBase{
         for(int i=0;i<this.currChildCount;i++){
             this.children[i].draw();
         }
-        Scheduler.addTask(new BitmapTask(this.bitmap,this.getAbsoluteX(),this.getAbsoluteY()));
+        Scheduler.addTask(new DrawBitmapTask(this.bitmap,this.getAbsoluteX(),this.getAbsoluteY()));
     }
 }
