@@ -2,15 +2,17 @@ package paint.bitmap;
 
 public class Bitmap {
 
-    final byte[] bitmap;
+    public final byte[] rawData;
 
     private boolean valid;
     private BitmapFileHeader fileHeader;
     private BitmapInfoHeader infoHeader;
+    private BitmapData data;
 
     public Bitmap(byte[] bitmap){
-        this.bitmap=bitmap;
+        this.rawData = bitmap;
         this.checkMetaData();
+        this.setBitmapData();
     }
 
     public BitmapFileHeader getFileHeader(){
@@ -25,13 +27,17 @@ public class Bitmap {
         return this.valid;
     }
 
-    public int getDataOffset(){
-        return this.fileHeader.getDataOffset();
+    public BitmapData getBitmapData(){
+        return this.data;
     }
 
     private void checkMetaData(){
-        this.fileHeader = new BitmapFileHeader(this.bitmap);
-        this.infoHeader = new BitmapInfoHeader(this.bitmap);
+        this.fileHeader = new BitmapFileHeader(this.rawData);
+        this.infoHeader = new BitmapInfoHeader(this.rawData);
         this.valid = this.fileHeader.isValid()&&this.infoHeader.isValid();
+    }
+
+    private void setBitmapData(){
+        this.data = new BitmapData(this);
     }
 }

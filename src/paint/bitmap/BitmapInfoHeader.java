@@ -9,7 +9,8 @@ public class BitmapInfoHeader {
     private int bitmapHeight;
     private boolean bitmapBottomUp;
     private int colorDepth;
-    private boolean compressed;
+    private boolean compressed = false;
+    private int compressedFlag;
 
     public BitmapInfoHeader(byte[] bitmap){
         this.bitmap=bitmap;
@@ -38,6 +39,10 @@ public class BitmapInfoHeader {
 
     public boolean isCompressed(){
         return this.compressed;
+    }
+
+    public int compressionStatus(){
+        return compressedFlag;
     }
 
     public boolean isValid(){
@@ -95,9 +100,8 @@ public class BitmapInfoHeader {
     }
 
     private void setCompressedStatus(){
-        int compressedFlag=0;
-        compressedFlag+=this.bitmap[30];
-        this.compressed=compressedFlag==0;
+        compressedFlag=this.bitmap[30];
+        this.compressed=compressedFlag!=0;
         if(compressedFlag==3)//custom encoded
             this.valid=false;
     }
