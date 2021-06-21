@@ -23,6 +23,10 @@ public abstract class InputTask extends Task{
         this.buffer=buffer;
     }
 
+    protected boolean canExecute(){
+            return this.isFocused()&&this.buffer!=null;
+    }
+
     protected boolean isFocused(){
         boolean focus = this==Scheduler.getCurrInputTask();
         if(focus==false){

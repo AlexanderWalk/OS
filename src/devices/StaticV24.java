@@ -83,6 +83,50 @@ public class StaticV24 {
         }
     }
 
+    public static void printHex(byte b){
+        printHexvalue(b,1);
+    }
+    //Handling Hex
+    private static void printHexvalue(long value, int byteCount){
+        byte[] b = new byte[byteCount];
+        int bitmask = 0xFF, arrayIndex=byteCount-1, i;
+        //highest Byte at lowest index
+        for(i = 0; i < byteCount; i++){
+            b[arrayIndex]=(byte)(value&bitmask);
+            arrayIndex--;
+            value = value>>8;
+        }
+        printHexPrefix();
+        for(int j = 0; j<byteCount; j++){
+            printByteAsHex(b[j]);
+        }
+    }
+
+
+    //prints a single byte as Hex
+    private static void printByteAsHex(byte b){
+        byte hexMask = 0x0F;
+        byte HexOffset = 4;
+        int firstHex = b & hexMask;
+        b= (byte) (b>>(byte)HexOffset);
+        int secondHex = b & hexMask;
+        _print(getHexChar(secondHex));
+        _print(getHexChar(firstHex));
+    }
+
+    private static void printHexPrefix(){
+        print("0x");
+    }
+
+    //Converts int value to Hex value.
+    private static char getHexChar(int value){
+        int charOffset = 48;
+        int hexCharOffset = 7;
+        if(value>=10)
+            charOffset+= hexCharOffset;
+        return (char)(value+charOffset);
+    }
+
     public static void print(long x) {
         if (x==0l) {
             print('0');
