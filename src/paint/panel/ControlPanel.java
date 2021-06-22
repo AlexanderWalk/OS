@@ -2,8 +2,7 @@ package paint.panel;
 
 import binimp.ByteData;
 import paint.bitmap.Bitmap;
-import paint.modes.ModeBase;
-import paint.modes.ModeFactory;
+import paint.modes.ModeCreator;
 
 public class ControlPanel extends PanelBase{
 
@@ -12,13 +11,13 @@ public class ControlPanel extends PanelBase{
     private int activeMode=-1;
     private int currModeCount;
     private int maxModeCount=2;
-    private IconPanel[] modes;
-    private ModeFactory modeFactory;
+    private InputModePanel[] modes;
+    private ModeCreator modeCreator;
 
-    public ControlPanel(ModeFactory factory){
+    public ControlPanel(ModeCreator factory){
         this.height=ControlPanel.panelHeight;
         this.width=ControlPanel.panelWidth;
-        this.modeFactory=factory;
+        this.modeCreator=factory;
     }
 
     @Override
@@ -54,18 +53,14 @@ public class ControlPanel extends PanelBase{
         }
     }
 
-    public ModeBase getMode(){
-        return this.modes[activeMode].getMode();
-    }
-
-    protected void addMode(IconPanel panel){
+    protected void addMode(InputModePanel panel){
         if(this.modes == null){
             this.currModeCount = 0;
-            modes = new IconPanel[2];
+            modes = new InputModePanel[maxModeCount];
         }
         if(this.maxModeCount == this.currModeCount){
             this.maxModeCount*=2;
-            IconPanel[] temp = new IconPanel[maxModeCount];
+            InputModePanel[] temp = new InputModePanel[maxModeCount];
             for(int i=0;i<currModeCount;i++){
                 temp[i]=modes[i];
             }
@@ -77,23 +72,25 @@ public class ControlPanel extends PanelBase{
 
     private void createControlPanel(){
         this.addBorder(3);
-        PanelBase spaceButton = new BitmapPanel(new Bitmap(ByteData.spaceButton),this,10,10);
-        this.addChild(spaceButton);
-        IconPanel mouseIcon = new IconPanel(new Bitmap(ByteData.mouseIcon),this,10,50,
-                this.modeFactory.getCursorMode());
-        this.addMode(mouseIcon);
-        this.addChild(mouseIcon);
-        IconPanel pencilIcon = new IconPanel(new Bitmap(ByteData.pencilIcon),this,60,50,
-                this.modeFactory.getDrawMode());
-        this.addMode(pencilIcon);
-        this.addChild(pencilIcon);
-        this.setupMode();
+        this.createModeSection();
     }
 
-    private void setupMode(){
-        if(this.activeMode==-1 && this.modes!=null){
-            this.modes[0].activate();
-            this.activeMode=0;
-        }
+    private void createModeSection(){
+        PanelBase spaceButton = new BitmapPanel(new Bitmap(ByteData.spaceButton),this,10,10);
+        this.addChild(spaceButton);
+        InputModePanel mouseIcon = new InputModePanel(new Bitmap(ByteData.mouseIcon),this,10,50);
+        this.modeCreator.createCursorMode(mouseIcon);
+        this.addMode(mouseIcon);
+        this.addChild(mouseIcon);
+        InputModePanel pencilIcon = new InputModePanel(new Bitmap(ByteData.pencilIcon),this,60,50);
+        this.modeCreator.createDrawMode(pencilIcon);
+        this.addMode(pencilIcon);
+        this.addChild(pencilIcon);
+        this.setInitialMode();
+    }
+
+    private void setInitialMode(){
+        this.modes[0].activate();
+        activeMode=0;
     }
 }

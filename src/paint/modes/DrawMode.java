@@ -5,15 +5,13 @@ import devices.keyboard.KeyboardEvent;
 import paint.Cursor;
 import paint.DrawAtCursorTask;
 import paint.bitmap.BitmapData;
+import paint.panel.InputModePanel;
 import scheduler.Scheduler;
 
 public class DrawMode extends ModeBase{
-    private Cursor cursor;
-    private BitmapData colorData;
 
-    public DrawMode(Cursor cursor, BitmapData data){
-        this.cursor=cursor;
-        this.colorData=data;
+    public DrawMode(InputModePanel panelToObserve, Cursor cursor, BitmapData data) {
+        super(panelToObserve, cursor, data);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class DrawMode extends ModeBase{
     }
 
     @Override
-    public void activate() {
+    protected void activate() {
         this.drawAtCursor();
     }
 

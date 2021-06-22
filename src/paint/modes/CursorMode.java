@@ -5,20 +5,17 @@ import devices.keyboard.KeyboardEvent;
 import paint.Cursor;
 import paint.ShowCursorTask;
 import paint.bitmap.BitmapData;
+import paint.panel.InputModePanel;
 import scheduler.Scheduler;
 
 public class CursorMode extends ModeBase{
 
-    private Cursor cursor;
-    private BitmapData colorData;
     private int lastCursorX=0;
     private int lastCursorY=0;
     private int lastCursorSize=0;
 
-
-    public CursorMode(Cursor cursor, BitmapData data){
-        this.cursor=cursor;
-        this.colorData=data;
+    public CursorMode(InputModePanel panelToObserve, Cursor cursor, BitmapData data) {
+        super(panelToObserve, cursor, data);
     }
 
     @Override

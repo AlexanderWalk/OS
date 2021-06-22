@@ -6,7 +6,8 @@ import output.vesa.VESAGraphics;
 import output.vesa.VESAMode;
 import output.vesa.VESAModeSelector;
 import paint.bitmap.Bitmap;
-import paint.modes.ModeFactory;
+import paint.modes.ModeCreator;
+import paint.modes.ModeHandler;
 import paint.panel.ControlPanel;
 import scheduler.task.InputTask;
 
@@ -17,7 +18,8 @@ public class PaintTask extends InputTask {
     private final Bitmap bitmap;
     private Screen screen;
     private Cursor cursor;
-    private InputControlHandler handler;
+    private InputControlHandler inputHandler;
+    private ModeHandler modeHandler;
     private boolean initialized = false;
 
     static{
@@ -44,6 +46,7 @@ public class PaintTask extends InputTask {
         this.initVesaMode();
         this.initCursor();
         this.initScreen();
+        this.initModeHandler();
         this.initControlPanel();
         this.initInputHandler();
         this.initialized=true;
@@ -55,7 +58,7 @@ public class PaintTask extends InputTask {
     }
 
     private void initControlPanel(){
-        this.controlPanel = new ControlPanel(new ModeFactory(this.cursor,this.bitmap.getBitmapData()));
+        this.controlPanel = new ControlPanel(new ModeCreator(this.cursor,this.bitmap.getBitmapData(),this.modeHandler));
         VESAMode mode = graphics.curMode;
         int topLeftX = mode.xRes - this.controlPanel.getWidth();
         this.controlPanel.setStartPos(topLeftX,0);
@@ -72,13 +75,17 @@ public class PaintTask extends InputTask {
     }
 
     private void initInputHandler(){
-        this.handler = new InputControlHandler(this.controlPanel);
+        this.inputHandler = new InputControlHandler(this.modeHandler,this.controlPanel);
+    }
+
+    private void initModeHandler(){
+        this.modeHandler = new ModeHandler();
     }
 
    private void handleInput(){
         while(this.buffer.canRead()&&!this.hasTerminated()){
             KeyboardEvent event = this.buffer.readEvent();
-                this.handler.handleKeyEvent(event);
+                this.inputHandler.handleKeyEvent(event);
         }
     }
 }
