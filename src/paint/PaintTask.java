@@ -1,6 +1,7 @@
 package paint;
 
 import binimp.ByteData;
+import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
 import output.vesa.VESAGraphics;
 import output.vesa.VESAMode;
@@ -9,6 +10,7 @@ import paint.bitmap.Bitmap;
 import paint.modes.ModeCreator;
 import paint.modes.ModeHandler;
 import paint.panel.ControlPanel;
+import scheduler.Scheduler;
 import scheduler.task.InputTask;
 
 public class PaintTask extends InputTask {
@@ -40,6 +42,12 @@ public class PaintTask extends InputTask {
             return;
         }
         this.handleInput();
+    }
+
+    @Override
+    public void terminateTask(){
+        super.terminateTask();
+        graphics.setTextMode();
     }
 
     private void initPaint(){
@@ -85,7 +93,18 @@ public class PaintTask extends InputTask {
    private void handleInput(){
         while(this.buffer.canRead()&&!this.hasTerminated()){
             KeyboardEvent event = this.buffer.readEvent();
-                this.inputHandler.handleKeyEvent(event);
+            if(event.control||event.alt){
+                switch(event.keyCode){
+                    case Key.c:
+                        this.terminateTask();
+                        break;
+                    case Key.r:
+                        this.terminateTask();
+                        Scheduler.addTask(new PaintTask());
+                        break;
+                }
+            }
+            this.inputHandler.handleKeyEvent(event);
         }
     }
 }
