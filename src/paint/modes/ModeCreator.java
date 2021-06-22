@@ -2,7 +2,7 @@ package paint.modes;
 
 import paint.Cursor;
 import paint.bitmap.BitmapData;
-import paint.panel.InputModePanel;
+import paint.panel.selectable.InputModePanel;
 
 public class ModeCreator {
 
@@ -16,12 +16,12 @@ public class ModeCreator {
         this.handler=handler;
     }
 
-    public void createCursorMode(InputModePanel panel){
+    public void observeCursorMode(InputModePanel panel){
         ModeBase mode = new CursorMode(panel, this.cursor, this.colorData);
         this.handleRegistration(panel,mode);
     }
 
-    public void createDrawMode(InputModePanel panel){
+    public void observeDrawMode(InputModePanel panel){
         DrawMode mode = new DrawMode(panel,this.cursor,this.colorData);
         this.handleRegistration(panel,mode);
     }

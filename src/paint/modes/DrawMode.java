@@ -5,7 +5,7 @@ import devices.keyboard.KeyboardEvent;
 import paint.Cursor;
 import paint.DrawAtCursorTask;
 import paint.bitmap.BitmapData;
-import paint.panel.InputModePanel;
+import paint.panel.selectable.InputModePanel;
 import scheduler.Scheduler;
 
 public class DrawMode extends ModeBase{
@@ -31,6 +31,9 @@ public class DrawMode extends ModeBase{
                 break;
             case Key.RIGHT_ARROW:
                 this.cursor.moveRight();
+                this.drawAtCursor();
+                break;
+            case Key.ENTER:
                 this.drawAtCursor();
                 break;
         }

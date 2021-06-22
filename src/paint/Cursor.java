@@ -5,7 +5,6 @@ public class Cursor {
     private final int minY;
     private final int maxX;
     private final int maxY;
-    private final int defaultSquareSize=5;
     private int squareSize;
     private int topLeftX;
     private int topLeftY;
@@ -15,7 +14,6 @@ public class Cursor {
         this.maxX=maxX;
         this.minY=minY;
         this.maxY=maxY;
-        this.squareSize=this.defaultSquareSize;
         this.topLeftY=minY;
         this.topLeftX=minX;
     }
@@ -30,6 +28,10 @@ public class Cursor {
 
     public int getSquareSize(){
         return this.squareSize;
+    }
+
+    public void setSquareSize(int size){
+        this.squareSize=size;
     }
 
     public void moveRight(){

@@ -10,6 +10,7 @@ import paint.bitmap.Bitmap;
 import paint.modes.ModeCreator;
 import paint.modes.ModeHandler;
 import paint.panel.ControlPanel;
+import paint.settings.SettingCreator;
 import scheduler.Scheduler;
 import scheduler.task.InputTask;
 
@@ -22,6 +23,7 @@ public class PaintTask extends InputTask {
     private Cursor cursor;
     private InputControlHandler inputHandler;
     private ModeHandler modeHandler;
+    private SettingCreator settingCreator;
     private boolean initialized = false;
 
     static{
@@ -55,6 +57,7 @@ public class PaintTask extends InputTask {
         this.initCursor();
         this.initScreen();
         this.initModeHandler();
+        this.initSettingCreator();
         this.initControlPanel();
         this.initInputHandler();
         this.initialized=true;
@@ -66,7 +69,8 @@ public class PaintTask extends InputTask {
     }
 
     private void initControlPanel(){
-        this.controlPanel = new ControlPanel(new ModeCreator(this.cursor,this.bitmap.getBitmapData(),this.modeHandler));
+        this.controlPanel = new ControlPanel(new ModeCreator(this.cursor,this.bitmap.getBitmapData(),this.modeHandler),
+                                             this.settingCreator);
         VESAMode mode = graphics.curMode;
         int topLeftX = mode.xRes - this.controlPanel.getWidth();
         this.controlPanel.setStartPos(topLeftX,0);
@@ -88,6 +92,10 @@ public class PaintTask extends InputTask {
 
     private void initModeHandler(){
         this.modeHandler = new ModeHandler();
+    }
+
+    private void initSettingCreator(){
+        this.settingCreator = new SettingCreator(this.cursor);
     }
 
    private void handleInput(){

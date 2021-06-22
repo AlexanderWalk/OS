@@ -24,7 +24,14 @@ public class InputControlHandler {
                 this.modeHandler.getCurrMode().handleInput(event);
                 break;
             case Key.SPACE:
-                this.panel.updateMode();
+                this.panel.modes.updateMode();
+                break;
+            case Key.TAB:
+                this.panel.settings.updateMode();
+                break;
+            case Key.ENTER:
+                this.panel.settings.enterSetting();
+                this.modeHandler.getCurrMode().handleInput(event);
                 break;
         }
     }

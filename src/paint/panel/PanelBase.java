@@ -11,6 +11,12 @@ public abstract class PanelBase {
     protected PanelBase parent;
     protected Border border;
 
+    public PanelBase(PanelBase parent, int xOffset, int yOffset){
+        this.parent=parent;
+        this.topLeftX = xOffset;
+        this.topLeftY = yOffset;
+    }
+
     public abstract void draw();
 
     protected int getAbsoluteX(){
@@ -31,6 +37,12 @@ public abstract class PanelBase {
             panel = panel.parent;
         }
         return y;
+    }
+
+    protected void drawChildren(){
+        for(int i=0;i<this.currChildCount;i++){
+            this.children[i].draw();
+        }
     }
 
     protected void addChild(PanelBase childPanel){

@@ -3,7 +3,7 @@ package paint.modes;
 import devices.keyboard.KeyboardEvent;
 import paint.Cursor;
 import paint.bitmap.BitmapData;
-import paint.panel.InputModePanel;
+import paint.panel.selectable.InputModePanel;
 
 public abstract class ModeBase extends ModeViewObserver{
     private ModeObserver observer[];
