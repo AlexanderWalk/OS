@@ -55,19 +55,19 @@ public class BitmapInfoHeader {
 
     private void setInfoHeaderSize(){
         int headerSize=0;
-        headerSize+=this.bitmap[17]<<24;
-        headerSize+=this.bitmap[16]<<16;
-        headerSize+=this.bitmap[15]<<8;
-        headerSize+=this.bitmap[14];
+        headerSize+=(this.bitmap[17]<<24)&0xFF000000;
+        headerSize+=(this.bitmap[16]<<16)&0xFF0000;
+        headerSize+=(this.bitmap[15]<<8)&0xFF00;
+        headerSize+=(this.bitmap[14])&0xFF;
         this.infoHeaderSizeInByte=headerSize;
     }
 
     private void setBitmapWidth(){
         int bitmapWidth=0;
-        bitmapWidth+=this.bitmap[21]<<24;
-        bitmapWidth+=this.bitmap[20]<<16;
-        bitmapWidth+=this.bitmap[19]<<8;
-        bitmapWidth+=this.bitmap[18];
+        bitmapWidth+=(this.bitmap[21]<<24)&0xFF000000;
+        bitmapWidth+=(this.bitmap[20]<<16)&0xFF0000;
+        bitmapWidth+=(this.bitmap[19]<<8)&0xFF00;
+        bitmapWidth+=this.bitmap[18]&0xFF;
         this.bitmapWidth=bitmapWidth;
         if(this.bitmapWidth<=0)
             this.valid=false;
@@ -75,10 +75,10 @@ public class BitmapInfoHeader {
 
     private void setBitmapHeight(){
         int bitmapHeight=0;
-        bitmapHeight+=this.bitmap[25]<<24;
-        bitmapHeight+=this.bitmap[24]<<16;
-        bitmapHeight+=this.bitmap[23]<<8;
-        bitmapHeight+=this.bitmap[22];
+        bitmapHeight+=(this.bitmap[25]<<24)&0xFF000000;
+        bitmapHeight+=(this.bitmap[24]<<16)&0xFF0000;
+        bitmapHeight+=(this.bitmap[23]<<8)&0xFF00;
+        bitmapHeight+=this.bitmap[22]&0xFF;
         this.bitmapHeight=bitmapHeight;
         if(this.bitmapHeight<0){
             this.bitmapBottomUp=false;
@@ -92,8 +92,8 @@ public class BitmapInfoHeader {
 
     private void setColorDepth(){
         int colorDepth=0;
-        colorDepth+=this.bitmap[29]<<8;
-        colorDepth+=this.bitmap[28];
+        colorDepth+=(this.bitmap[29]<<8)&0xFF00;
+        colorDepth+=this.bitmap[28]&0xFF;
         this.colorDepth=colorDepth;
         if(this.colorDepth<=0)
             this.valid=false;

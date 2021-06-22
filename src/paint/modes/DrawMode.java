@@ -46,6 +46,6 @@ public class DrawMode extends ModeBase{
 
     private void drawAtCursor(){
         Scheduler.addTask(new DrawAtCursorTask(this.cursor.getX(),this.cursor.getY(),
-                this.cursor.getSquareSize(),0x00FF00, this.colorData));
+                this.cursor.getSquareSize(),this.cursor.getColor(), this.colorData));
     }
 }

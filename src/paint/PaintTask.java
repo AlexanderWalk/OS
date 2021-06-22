@@ -31,7 +31,7 @@ public class PaintTask extends InputTask {
     }
 
     public PaintTask(){
-        this.bitmap= new Bitmap(ByteData.gandalf);
+        this.bitmap= new Bitmap(ByteData.braum);
     }
 
     @Override
@@ -105,11 +105,11 @@ public class PaintTask extends InputTask {
                 switch(event.keyCode){
                     case Key.c:
                         this.terminateTask();
-                        break;
+                        return;
                     case Key.r:
                         this.terminateTask();
                         Scheduler.addTask(new PaintTask());
-                        break;
+                        return;
                 }
             }
             this.inputHandler.handleKeyEvent(event);

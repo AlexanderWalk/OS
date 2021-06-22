@@ -1,11 +1,13 @@
 package paint.settings;
 
 import paint.Cursor;
+import paint.panel.selectable.ColorSettingPanel;
 import paint.panel.selectable.SizeSettingPanel;
 
 public class SettingCreator {
 
     private SizeSetting sizeSetting;
+    private ColorSetting colorSetting;
     private Cursor cursor;
 
     public SettingCreator(Cursor cursor){
@@ -19,6 +21,10 @@ public class SettingCreator {
         panel.register(this.sizeSetting);
     }
 
-    public void createColorSetting(){
+    public void observeColorSetting(ColorSettingPanel panel){
+        if(this.colorSetting==null){
+            this.colorSetting=new ColorSetting(this.cursor);
+        }
+        panel.register(this.colorSetting);
     }
 }

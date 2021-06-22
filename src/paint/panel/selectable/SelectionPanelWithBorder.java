@@ -9,10 +9,9 @@ public abstract class SelectionPanelWithBorder extends PanelBase {
     protected BitmapPanel iconBorderActive;
     protected BitmapPanel iconBorderInactive;
     protected boolean active = false;
-    protected static final int innerOffset=0;
 
     public SelectionPanelWithBorder(PanelBase parent, int xOffset, int yOffset) {
-        super(parent, xOffset+innerOffset, yOffset+innerOffset);
+        super(parent, xOffset, yOffset);
     }
 
     public void activateBorder(){

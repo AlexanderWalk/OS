@@ -8,7 +8,7 @@ public class ControlPanelSettings {
     private int maxSettingCount=2;
     private SettingPanel[] settings;
 
-    public void updateMode(){
+    public void nextMode(){
         if(selectedSetting == currSettingCount-1){
             this.settings[this.selectedSetting].deactivateBorder();
             this.selectedSetting=0;
@@ -19,6 +19,19 @@ public class ControlPanelSettings {
             this.settings[this.selectedSetting].activateBorder();
         }
     }
+
+    public void prevMode(){
+        if(selectedSetting == 0){
+            this.settings[this.selectedSetting].deactivateBorder();
+            this.selectedSetting=this.currSettingCount-1;
+            this.settings[this.selectedSetting].activateBorder();
+        }else{
+            this.settings[this.selectedSetting].deactivateBorder();
+            this.selectedSetting--;
+            this.settings[this.selectedSetting].activateBorder();
+        }
+    }
+
 
     public void enterSetting(){
         this.settings[this.selectedSetting].enterSetting();

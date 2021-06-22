@@ -12,4 +12,5 @@ public class ByteData {
     public static byte[] enterButton;
     public static byte[] activeSettingBorder;
     public static byte[] settingBorder;
+    public static byte[] braum;
 }

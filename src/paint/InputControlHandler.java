@@ -27,7 +27,11 @@ public class InputControlHandler {
                 this.panel.modes.updateMode();
                 break;
             case Key.TAB:
-                this.panel.settings.updateMode();
+                if(event.alt||event.control||event.shift){
+                    this.panel.settings.prevMode();
+                }else{
+                    this.panel.settings.nextMode();
+                }
                 break;
             case Key.ENTER:
                 this.panel.settings.enterSetting();

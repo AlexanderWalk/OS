@@ -26,7 +26,19 @@ public class Scheduler {
                 return true;
             }
         }
+        expandArray();
+        addTask(t);
         return false;
+    }
+
+    private static void expandArray(){
+        int oldTaskCount=maxTasks;
+        maxTasks*=2;
+        Task[] temp = new Task[maxTasks];
+        for(int i=0;i<oldTaskCount;i++){
+            temp[i]=tasks[i];
+        }
+        tasks=temp;
     }
 
     public static void delTask(Task t){

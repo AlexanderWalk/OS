@@ -8,6 +8,7 @@ public class Cursor {
     private int squareSize;
     private int topLeftX;
     private int topLeftY;
+    private int color;
 
     public Cursor(int minX,int maxX,int minY, int maxY){
         this.minX=minX;
@@ -24,6 +25,14 @@ public class Cursor {
 
     public int getY(){
         return this.topLeftY;
+    }
+
+    public int getColor(){
+        return this.color;
+    }
+
+    public void setColor(int color){
+        this.color=color;
     }
 
     public int getSquareSize(){

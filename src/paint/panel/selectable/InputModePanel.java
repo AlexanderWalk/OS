@@ -11,7 +11,6 @@ import scheduler.Scheduler;
 public class InputModePanel extends SelectionPanelWithBorder {
     private final Bitmap bitmap;
     private ModeViewObserver observer;
-    @Override
     protected static int innerOffset = 3;
 
     public InputModePanel(Bitmap bitmap, PanelBase parent, int xOffset, int yOffset) {
