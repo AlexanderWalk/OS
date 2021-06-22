@@ -2,6 +2,7 @@ package paint;
 
 import paint.bitmap.Bitmap;
 import paint.bitmap.BitmapData;
+import paint.drawTasks.DrawBitmapTask;
 import scheduler.Scheduler;
 
 public class Screen {

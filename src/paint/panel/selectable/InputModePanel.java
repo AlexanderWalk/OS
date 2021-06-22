@@ -1,7 +1,7 @@
 package paint.panel.selectable;
 
 import binimp.ByteData;
-import paint.DrawBitmapTask;
+import paint.drawTasks.DrawBitmapTask;
 import paint.bitmap.Bitmap;
 import paint.modes.ModeViewObserver;
 import paint.panel.BitmapPanel;

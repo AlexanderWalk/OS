@@ -9,7 +9,7 @@ import output.vesa.VESAModeSelector;
 import paint.bitmap.Bitmap;
 import paint.modes.ModeCreator;
 import paint.modes.ModeHandler;
-import paint.panel.ControlPanel;
+import paint.panel.control.ControlPanel;
 import paint.settings.SettingCreator;
 import scheduler.Scheduler;
 import scheduler.task.InputTask;

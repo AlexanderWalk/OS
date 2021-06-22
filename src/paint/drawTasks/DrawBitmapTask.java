@@ -1,6 +1,7 @@
-package paint;
+package paint.drawTasks;
 
 import output.vesa.VESAModeSelector;
+import paint.PaintTask;
 import paint.bitmap.Bitmap;
 import scheduler.task.Task;
 

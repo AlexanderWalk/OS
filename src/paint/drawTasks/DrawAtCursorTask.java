@@ -1,5 +1,6 @@
-package paint;
+package paint.drawTasks;
 
+import paint.PaintTask;
 import paint.bitmap.BitmapData;
 
 public class DrawAtCursorTask extends DrawSquareTask{

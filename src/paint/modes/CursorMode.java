@@ -3,7 +3,7 @@ package paint.modes;
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
 import paint.Cursor;
-import paint.ShowCursorTask;
+import paint.drawTasks.ShowCursorTask;
 import paint.bitmap.BitmapData;
 import paint.panel.selectable.InputModePanel;
 import scheduler.Scheduler;

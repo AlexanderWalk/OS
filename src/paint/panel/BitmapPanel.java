@@ -1,6 +1,6 @@
 package paint.panel;
 
-import paint.DrawBitmapTask;
+import paint.drawTasks.DrawBitmapTask;
 import paint.bitmap.Bitmap;
 import scheduler.Scheduler;
 

@@ -1,5 +1,6 @@
-package paint;
+package paint.drawTasks;
 
+import paint.PaintTask;
 import scheduler.task.Task;
 
 public class DrawSquareTask extends Task {

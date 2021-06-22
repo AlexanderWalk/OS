@@ -3,7 +3,7 @@ package paint;
 import devices.keyboard.Key;
 import devices.keyboard.KeyboardEvent;
 import paint.modes.ModeHandler;
-import paint.panel.ControlPanel;
+import paint.panel.control.ControlPanel;
 
 public class InputControlHandler {
 

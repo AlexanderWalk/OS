@@ -1,7 +1,7 @@
 package paint.panel.selectable;
 
 import binimp.ByteData;
-import paint.DrawSquareTask;
+import paint.drawTasks.DrawSquareTask;
 import paint.bitmap.Bitmap;
 import paint.panel.BitmapPanel;
 import paint.panel.PanelBase;

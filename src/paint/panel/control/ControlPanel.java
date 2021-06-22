@@ -1,13 +1,15 @@
-package paint.panel;
+package paint.panel.control;
 
 import binimp.ByteData;
 import paint.bitmap.Bitmap;
 import paint.modes.ModeCreator;
+import paint.panel.BitmapPanel;
+import paint.panel.PanelBase;
 import paint.panel.selectable.InputModePanel;
 import paint.panel.selectable.SizeSettingPanel;
 import paint.settings.SettingCreator;
 
-public class ControlPanel extends PanelBase{
+public class ControlPanel extends PanelBase {
 
     public static final int panelHeight=300;
     public static final int panelWidth=100;

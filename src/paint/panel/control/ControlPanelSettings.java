@@ -1,4 +1,4 @@
-package paint.panel;
+package paint.panel.control;
 
 import paint.panel.selectable.SettingPanel;
 
